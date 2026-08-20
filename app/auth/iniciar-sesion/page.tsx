@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { AuthLayout } from "@/components/layout/AuthLayout";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { iniciarSesion } from "@/services/auth.service";
@@ -26,30 +26,33 @@ export default function IniciarSesionPage() {
   }
 
   return (
-    <>
-      <AppHeader volverA="/" volverLabel="Inicio" />
-      <div className="app-shell auth-shell">
-        <h1>Iniciá sesión</h1>
-        <p className="sub-lede">Accedé a tus proyectos guardados.</p>
+    <AuthLayout
+      asideTitle="Retomá tu plano donde lo dejaste"
+      asideText="Tus proyectos, componentes y configuraciones quedan guardados en tu cuenta."
+      asideItems={["Base geográfica con TopoExport", "Biblioteca completa de componentes", "Exportación a PDF a escala real"]}
+      switchText="¿Todavía no tenés una cuenta?"
+      switchHref="/auth/registro"
+      switchLabel="Crear cuenta"
+    >
+      <h1>Iniciá sesión</h1>
+      <p className="sub-lede">Accedé a tus planos y continuá trabajando en tus proyectos.</p>
 
-        <form className="project-form" onSubmit={enviar}>
-          <div className="form-grid">
-            <Input label="Correo electrónico" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Input label="Contraseña" type="password" required value={contrasena} onChange={(e) => setContrasena(e.target.value)} />
-          </div>
-          {error ? <p className="form-error">{error}</p> : null}
-          <div className="form-actions">
-            <Button type="submit" size="lg">
-              Iniciar sesión
-            </Button>
-          </div>
-        </form>
+      <form className="project-form" onSubmit={enviar}>
+        <div className="form-grid" style={{ gridTemplateColumns: "1fr" }}>
+          <Input label="Correo electrónico" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input label="Contraseña" type="password" required value={contrasena} onChange={(e) => setContrasena(e.target.value)} />
+        </div>
+        {error ? <p className="form-error">{error}</p> : null}
+        <div className="form-actions" style={{ justifyContent: "stretch" }}>
+          <Button type="submit" size="lg" style={{ width: "100%", justifyContent: "center" }}>
+            Iniciar sesión
+          </Button>
+        </div>
+      </form>
 
-        <p className="auth-switch">
-          <a href="/auth/recuperar-acceso">¿Olvidaste tu contraseña?</a> · ¿No tenés cuenta?{" "}
-          <a href="/auth/registro">Crear cuenta</a>
-        </p>
-      </div>
-    </>
+      <p className="auth-switch">
+        <a href="/auth/recuperar-acceso">¿Olvidaste tu contraseña?</a>
+      </p>
+    </AuthLayout>
   );
 }

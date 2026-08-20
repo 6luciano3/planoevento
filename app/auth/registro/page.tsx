@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { AuthLayout } from "@/components/layout/AuthLayout";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { registrar } from "@/services/auth.service";
@@ -28,38 +28,40 @@ export default function RegistroPage() {
   }
 
   return (
-    <>
-      <AppHeader volverA="/" volverLabel="Inicio" />
-      <div className="app-shell auth-shell">
-        <h1>Creá tu cuenta</h1>
-        <p className="sub-lede">Guardá tus planos y continuá editándolos cuando quieras.</p>
+    <AuthLayout
+      asideTitle="Todo tu plano en un solo lugar"
+      asideText="Guardá y editá tus proyectos cuando quieras, y descargá el resultado en PDF."
+      asideItems={["Creá planos con elementos prediseñados", "Guardá y editá todos tus proyectos", "Descargá el resultado en PDF"]}
+      switchText="¿Ya tenés una cuenta?"
+      switchHref="/auth/iniciar-sesion"
+      switchLabel="Iniciar sesión"
+    >
+      <h1>Creá tu cuenta</h1>
+      <p className="sub-lede">Guardá tus planos y continuá editándolos cuando quieras.</p>
 
-        <form className="project-form" onSubmit={enviar}>
-          <div className="form-grid">
-            <Input label="Nombre" required value={nombre} onChange={(e) => setNombre(e.target.value)} />
-            <Input label="Apellido" required value={apellido} onChange={(e) => setApellido(e.target.value)} />
-            <Input label="Correo electrónico" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Input
-              label="Contraseña"
-              type="password"
-              required
-              hint="Mínimo 8 caracteres, una mayúscula y un número."
-              value={contrasena}
-              onChange={(e) => setContrasena(e.target.value)}
-            />
-          </div>
-          {error ? <p className="form-error">{error}</p> : null}
-          <div className="form-actions">
-            <Button type="submit" size="lg">
-              Crear cuenta
-            </Button>
-          </div>
-        </form>
-
-        <p className="auth-switch">
-          ¿Ya tenés una cuenta? <a href="/auth/iniciar-sesion">Iniciar sesión</a>
-        </p>
-      </div>
-    </>
+      <form className="project-form" onSubmit={enviar}>
+        <div className="form-grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
+          <Input label="Nombre" required value={nombre} onChange={(e) => setNombre(e.target.value)} />
+          <Input label="Apellido" required value={apellido} onChange={(e) => setApellido(e.target.value)} />
+        </div>
+        <div className="form-grid" style={{ gridTemplateColumns: "1fr" }}>
+          <Input label="Correo electrónico" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input
+            label="Contraseña"
+            type="password"
+            required
+            hint="Mínimo 8 caracteres, una mayúscula y un número."
+            value={contrasena}
+            onChange={(e) => setContrasena(e.target.value)}
+          />
+        </div>
+        {error ? <p className="form-error">{error}</p> : null}
+        <div className="form-actions" style={{ justifyContent: "stretch" }}>
+          <Button type="submit" size="lg" style={{ width: "100%", justifyContent: "center" }}>
+            Crear cuenta
+          </Button>
+        </div>
+      </form>
+    </AuthLayout>
   );
 }
