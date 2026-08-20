@@ -21,7 +21,7 @@ aplicación") ya lo anticipaba en su sección final.
 | 11 | Importar plano propio | `app/proyectos/[proyectoId]/plano-base/page.tsx` (mismo paso) | ✅ Completa — `services/file.service.ts` |
 | 12 | Calibrar plano | *(pendiente de ruta propia)* | ⏳ `editor/geometry/scale.ts#calcularFactorEscala` listo; falta la UI |
 | 13 | Papel y escala | `app/proyectos/[proyectoId]/exportar/page.tsx` (panel "Configuración de salida") | ✅ Completa — edita `plano.hoja` de verdad (tamaño, orientación, cuadrícula) |
-| 14 | Plantillas | *(fuera del MVP, ver PRD §16)* | ⏳ Extensión |
+| 14 | Plantillas | `app/proyectos/plantillas/page.tsx` | ✅ Completa — 15 plantillas de ferias y eventos (`config/plantillas.ts`), cada una crea un plano ya poblado y 100% editable |
 | 15 | Editor principal | `app/proyectos/[proyectoId]/editor/page.tsx` | ✅ Completa y funcional (drag & drop real, 9 herramientas seleccionables, distribuir y numerar) |
 | 16 | Propiedades del elemento | `components/editor/PropertiesPanel.tsx` (panel dentro del editor) | ✅ Completa — secciones Identificación/Posición/Presentación/Organización/Acciones |
 | 17 | Biblioteca de elementos | `components/editor/SymbolLibrary.tsx` (panel dentro del editor) | ✅ Completa |

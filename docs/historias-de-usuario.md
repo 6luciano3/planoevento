@@ -9,6 +9,7 @@ Ver también `docs/PRD-PlanoEvento.md`. Prioridad MVP salvo que se indique "Exte
 - **HU-ORG-04 — Crear un proyecto.** Como organizador, quiero crear un proyecto de plano para registrar los datos básicos del evento. *(`app/proyectos/nuevo`)*
 - **HU-ORG-05 — Editar los datos del proyecto.** Como organizador, quiero modificar los datos del evento para corregirlos antes de generar el plano.
 - **HU-ORG-06 — Duplicar un proyecto** *(Extensión).* Como organizador, quiero duplicar un plano existente para reutilizar la distribución en otro evento. *(`store/project-store.ts#duplicar`)*
+- **HU-ORG-41 — Empezar desde una plantilla** *(Extensión).* Como organizador, quiero elegir entre 15 distribuciones iniciales de ferias y eventos (artesanías, gastronomía, festival, feria del libro, exposición rural, etc.) para no partir de un plano en blanco. *(`config/plantillas.ts`, `app/proyectos/plantillas/page.tsx`, `services/project.service.ts#crearProyectoDesdePlantilla`)*
 
 ## Módulo 2 — Ubicación y plano base
 - **HU-ORG-07 — Buscar la ubicación del evento.** Dirección, localidad, coordenadas o selección manual en el mapa.
@@ -67,7 +68,7 @@ Ver también `docs/PRD-PlanoEvento.md`. Prioridad MVP salvo que se indique "Exte
 ## Matriz resumida
 | Módulo | HU | MVP | Extensión |
 |---|---|---|---|
-| Acceso y proyectos | 6 | 5 | 1 |
+| Acceso y proyectos | 7 | 5 | 2 |
 | Ubicación y base geográfica (OpenStreetMap) | 6 | 6 | 0 |
 | Hoja de trabajo | 2 | 2 | 0 |
 | Edición y dibujo | 4 | 4 | 0 |
@@ -76,4 +77,4 @@ Ver también `docs/PRD-PlanoEvento.md`. Prioridad MVP salvo que se indique "Exte
 | Carátula y leyenda | 3 | 3 | 0 |
 | Revisión y salida | 5 | 3 | 2 |
 | Administración | 4 | 4 | 0 |
-| **Total** | **44** | **40** | **4** |
+| **Total** | **45** | **40** | **5** |

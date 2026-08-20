@@ -1,8 +1,11 @@
 import type { ProyectoPlano, Evento } from "@/types/project";
+import type { ObjetoPlano } from "@/types/editor";
+import type { PlantillaPlano } from "@/types/template";
 import { leer, guardar } from "@/lib/storage";
 import { STORAGE_KEYS } from "@/lib/constants";
 import { CAPAS_INICIALES } from "@/config/layer-presets";
 import { getPaperSize } from "@/config/paper-sizes";
+import { crearObjetoDesdeSimbolo } from "@/symbols/symbol-factory";
 
 /**
  * CRUD de proyectos. Hoy persiste en localStorage; la firma de estas
@@ -22,11 +25,15 @@ export function obtenerProyecto(id: string): ProyectoPlano | undefined {
   return listarProyectos().find((p) => p.id === id);
 }
 
-export function crearProyecto(evento: Evento, predioParcial: Partial<ProyectoPlano["predio"]>): ProyectoPlano {
+function construirProyectoBase(
+  evento: Evento,
+  predioParcial: Partial<ProyectoPlano["predio"]>,
+  tituloPlano: string
+): Omit<ProyectoPlano, "capas" | "objetos"> {
   const ahora = new Date().toISOString();
   const hoja = getPaperSize("A1");
 
-  const nuevo: ProyectoPlano = {
+  return {
     id: nuevoId("proy"),
     nombre: evento.nombre || "Proyecto sin nombre",
     estado: "BORRADOR",
@@ -65,7 +72,7 @@ export function crearProyecto(evento: Evento, predioParcial: Partial<ProyectoPla
         mostrarFondo: true,
       },
       caratula: {
-        tituloPlano: "Plano general del evento",
+        tituloPlano,
         nombreEvento: evento.nombre,
         organizador: evento.organizador,
         documentoOrganizador: evento.documentoOrganizador,
@@ -83,8 +90,48 @@ export function crearProyecto(evento: Evento, predioParcial: Partial<ProyectoPla
         observaciones: "",
       },
     },
+  };
+}
+
+export function crearProyecto(evento: Evento, predioParcial: Partial<ProyectoPlano["predio"]>): ProyectoPlano {
+  const nuevo: ProyectoPlano = {
+    ...construirProyectoBase(evento, predioParcial, "Plano general del evento"),
     capas: CAPAS_INICIALES.map((c) => ({ ...c, id: nuevoId("capa") })),
     objetos: [],
+  };
+
+  const proyectos = listarProyectos();
+  guardar(STORAGE_KEYS.proyectos, [...proyectos, nuevo]);
+  return nuevo;
+}
+
+/** HU-ORG-XX — crea un proyecto ya poblado con los símbolos de una plantilla (Pantalla 14 "Plantillas"). */
+export function crearProyectoDesdePlantilla(
+  plantilla: PlantillaPlano,
+  evento: Evento,
+  predioParcial: Partial<ProyectoPlano["predio"]>
+): ProyectoPlano {
+  const capas = CAPAS_INICIALES.map((c) => ({ ...c, id: nuevoId("capa") }));
+  const capaIdPorNombre = new Map(capas.map((c) => [c.nombre, c.id]));
+  const capaPorDefecto = capas[capas.length - 1].id;
+
+  const objetos: ObjetoPlano[] = [];
+  plantilla.objetos.forEach((item, i) => {
+    const capaId = capaIdPorNombre.get(item.capa) ?? capaPorDefecto;
+    const objeto = crearObjetoDesdeSimbolo(item.simboloId, { x: item.x, y: item.y }, capaId, i + 1);
+    if (!objeto) return;
+    objetos.push({
+      ...objeto,
+      anchoM: item.anchoM ?? objeto.anchoM,
+      largoM: item.largoM ?? objeto.largoM,
+      rotacionGrados: item.rotacionGrados ?? objeto.rotacionGrados,
+    });
+  });
+
+  const nuevo: ProyectoPlano = {
+    ...construirProyectoBase(evento, predioParcial, plantilla.nombre),
+    capas,
+    objetos,
   };
 
   const proyectos = listarProyectos();

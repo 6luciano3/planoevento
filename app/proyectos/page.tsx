@@ -52,17 +52,27 @@ export default function MisProyectosPage() {
             <h1>Mis planos</h1>
             <p className="sub-lede">Administrá los planos de tus eventos y ferias.</p>
           </div>
-          <Link className="btn btn-solid btn-lg" href="/proyectos/nuevo">
-            + Nuevo plano
-          </Link>
+          <div style={{ display: "flex", gap: 10 }}>
+            <Link className="btn btn-outline btn-lg" href="/proyectos/plantillas">
+              Elegir una plantilla
+            </Link>
+            <Link className="btn btn-solid btn-lg" href="/proyectos/nuevo">
+              + Nuevo plano
+            </Link>
+          </div>
         </div>
 
         {proyectos.length === 0 ? (
           <div className="empty-state">
             <p>Todavía no creaste ningún plano.</p>
-            <Link className="btn btn-solid" href="/proyectos/nuevo" style={{ marginTop: 16 }}>
-              Crear mi primer plano
-            </Link>
+            <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 16, flexWrap: "wrap" }}>
+              <Link className="btn btn-solid" href="/proyectos/nuevo">
+                Crear mi primer plano
+              </Link>
+              <Link className="btn btn-outline" href="/proyectos/plantillas">
+                Empezar desde una plantilla
+              </Link>
+            </div>
           </div>
         ) : (
           <>

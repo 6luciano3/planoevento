@@ -1,11 +1,13 @@
 import { create } from "zustand";
 import type { ProyectoPlano, Evento } from "@/types/project";
+import type { PlantillaPlano } from "@/types/template";
 import * as projectService from "@/services/project.service";
 
 interface ProjectStoreState {
   proyectos: ProyectoPlano[];
   cargarProyectos: () => void;
   crear: (evento: Evento, predio: Partial<ProyectoPlano["predio"]>) => ProyectoPlano;
+  crearDesdePlantilla: (plantilla: PlantillaPlano, evento: Evento, predio: Partial<ProyectoPlano["predio"]>) => ProyectoPlano;
   eliminar: (id: string) => void;
   duplicar: (id: string) => void;
 }
@@ -17,6 +19,12 @@ export const useProjectStore = create<ProjectStoreState>((set, get) => ({
 
   crear: (evento, predio) => {
     const nuevo = projectService.crearProyecto(evento, predio);
+    set({ proyectos: [...get().proyectos, nuevo] });
+    return nuevo;
+  },
+
+  crearDesdePlantilla: (plantilla, evento, predio) => {
+    const nuevo = projectService.crearProyectoDesdePlantilla(plantilla, evento, predio);
     set({ proyectos: [...get().proyectos, nuevo] });
     return nuevo;
   },
