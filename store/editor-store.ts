@@ -4,6 +4,7 @@ import type { ObjetoPlano, EstadoEditor, HerramientaEditor } from "@/types/edito
 import type { Punto } from "@/types/location";
 import * as projectService from "@/services/project.service";
 import { crearObjetoDesdeSimbolo } from "@/symbols/symbol-factory";
+import { obtenerSimbolo } from "@/symbols/symbol-catalog";
 import {
   agregarObjeto,
   actualizarObjeto,
@@ -26,6 +27,14 @@ interface EditorStoreState extends EstadoEditor {
   setCapaActiva: (id: string) => void;
   seleccionar: (id: string | null) => void;
   soltarSimbolo: (simboloId: string, posicion: Punto) => void;
+  distribuirSimbolo: (
+    simboloId: string,
+    origen: Punto,
+    filas: number,
+    columnas: number,
+    separacionHorizontalM: number,
+    separacionVerticalM: number
+  ) => number;
   moverObjeto: (id: string, posicion: Punto) => void;
   actualizarPropiedades: (id: string, cambios: Partial<ObjetoPlano>) => void;
   eliminarSeleccionado: () => void;
@@ -73,6 +82,37 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     const actualizado = { ...proyecto, objetos };
     set({ proyecto: actualizado, seleccionId: nuevo.id });
     projectService.guardarProyecto(actualizado);
+  },
+
+  /** Crea varios objetos en fila/cuadrícula de una sola vez — Pantalla de "Distribuir y numerar" (HU-ORG-28/29). */
+  distribuirSimbolo: (simboloId, origen, filas, columnas, separacionHorizontalM, separacionVerticalM) => {
+    const { proyecto, capaActivaId } = get();
+    if (!proyecto || !capaActivaId) return 0;
+    const def = obtenerSimbolo(simboloId);
+    if (!def) return 0;
+
+    historial.registrar(proyecto.objetos);
+    let numero = proyecto.objetos.filter((o) => o.simboloId === simboloId).length + 1;
+    const nuevos: ObjetoPlano[] = [];
+    for (let f = 0; f < filas; f++) {
+      for (let c = 0; c < columnas; c++) {
+        const posicion = {
+          x: origen.x + c * (def.defaultWidth + separacionHorizontalM),
+          y: origen.y + f * (def.defaultHeight + separacionVerticalM),
+        };
+        const nuevo = crearObjetoDesdeSimbolo(simboloId, posicion, capaActivaId, numero);
+        if (nuevo) {
+          nuevos.push(nuevo);
+          numero += 1;
+        }
+      }
+    }
+
+    const objetos = [...proyecto.objetos, ...nuevos];
+    const actualizado = { ...proyecto, objetos };
+    set({ proyecto: actualizado });
+    projectService.guardarProyecto(actualizado);
+    return nuevos.length;
   },
 
   moverObjeto: (id, posicion) => {

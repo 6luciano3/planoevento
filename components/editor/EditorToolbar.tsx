@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   Undo2,
@@ -19,10 +20,12 @@ import {
   Pentagon,
   Type,
   Ruler,
+  LayoutGrid,
 } from "lucide-react";
 import { useEditorStore } from "@/store/editor-store";
 import { EDITOR_CONFIG } from "@/config/editor.config";
 import { HERRAMIENTAS } from "@/editor/tools";
+import { DistributeModal } from "./DistributeModal";
 import type { HerramientaEditor } from "@/types/editor";
 import type { EstadoGuardado } from "@/hooks/useAutosave";
 
@@ -61,6 +64,7 @@ export function EditorToolbar({ proyectoId, proyectoNombre, estadoGuardado }: Ed
   const herramienta = useEditorStore((s) => s.herramienta);
   const setHerramienta = useEditorStore((s) => s.setHerramienta);
   const escalaNumerica = useEditorStore((s) => s.proyecto?.plano.escalaNumerica);
+  const [distribuirAbierto, setDistribuirAbierto] = useState(false);
 
   return (
     <>
@@ -114,6 +118,9 @@ export function EditorToolbar({ proyectoId, proyectoNombre, estadoGuardado }: Ed
         <button className={`icon-btn ${mostrarCuadricula ? "icon-btn-active" : ""}`} onClick={toggleCuadricula} title="Mostrar cuadrícula">
           <Grid3x3 size={17} />
         </button>
+        <button className="icon-btn" onClick={() => setDistribuirAbierto(true)} title="Distribuir y numerar elementos">
+          <LayoutGrid size={17} />
+        </button>
 
         <span className="toolbar-sep" />
 
@@ -126,6 +133,8 @@ export function EditorToolbar({ proyectoId, proyectoNombre, estadoGuardado }: Ed
           <ZoomIn size={17} />
         </button>
       </div>
+
+      {distribuirAbierto ? <DistributeModal onCerrar={() => setDistribuirAbierto(false)} /> : null}
     </>
   );
 }
