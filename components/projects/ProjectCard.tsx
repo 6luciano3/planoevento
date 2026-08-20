@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { Copy, Trash2 } from "lucide-react";
 import type { ProyectoPlano } from "@/types/project";
 import { formatearFechaHora } from "@/lib/formatters";
 import { ESTADOS_PROYECTO_LABEL } from "@/lib/constants";
@@ -15,12 +18,19 @@ export function ProjectCard({ proyecto, onDuplicar, onEliminar }: ProjectCardPro
     <article className="project-card">
       <div className="project-card-thumb" aria-hidden="true">
         <svg viewBox="0 0 100 70">
-          <rect x="4" y="4" width="92" height="62" fill="none" stroke="var(--line-strong)" strokeDasharray="3 3" />
-          <rect x="16" y="16" width="14" height="12" fill="var(--accent-soft)" stroke="var(--accent)" strokeWidth="0.8" />
-          <rect x="34" y="16" width="14" height="12" fill="var(--accent-soft)" stroke="var(--accent)" strokeWidth="0.8" />
-          <rect x="52" y="16" width="14" height="12" fill="var(--accent-soft)" stroke="var(--accent)" strokeWidth="0.8" />
-          <circle cx="24" cy="46" r="4" fill="none" stroke="var(--good)" strokeWidth="0.8" />
-          <circle cx="70" cy="46" r="4" fill="none" stroke="var(--ink-faint)" strokeWidth="0.8" />
+          <rect x="0" y="0" width="100" height="70" fill="var(--good-soft)" />
+          <circle cx="10" cy="10" r="4" fill="var(--good)" opacity="0.55" />
+          <circle cx="92" cy="14" r="3.5" fill="var(--good)" opacity="0.55" />
+          <circle cx="8" cy="58" r="3" fill="var(--good)" opacity="0.55" />
+          <circle cx="94" cy="60" r="4" fill="var(--good)" opacity="0.55" />
+          <rect x="16" y="22" width="13" height="11" rx="1.5" fill="var(--accent)" opacity="0.85" />
+          <rect x="31" y="22" width="13" height="11" rx="1.5" fill="var(--accent)" opacity="0.85" />
+          <rect x="46" y="22" width="13" height="11" rx="1.5" fill="var(--accent)" opacity="0.85" />
+          <rect x="16" y="37" width="13" height="11" rx="1.5" fill="var(--accent)" opacity="0.85" />
+          <rect x="31" y="37" width="13" height="11" rx="1.5" fill="var(--accent)" opacity="0.85" />
+          <rect x="46" y="37" width="13" height="11" rx="1.5" fill="var(--accent)" opacity="0.85" />
+          <circle cx="72" cy="28" r="5" fill="var(--info)" opacity="0.85" />
+          <rect x="66" y="40" width="12" height="8" rx="1.5" fill="var(--danger)" opacity="0.75" />
         </svg>
       </div>
       <div className="project-card-body">
@@ -33,11 +43,11 @@ export function ProjectCard({ proyecto, onDuplicar, onEliminar }: ProjectCardPro
           <Link className="btn btn-outline" href={`/proyectos/${proyecto.id}/editor`}>
             Abrir plano
           </Link>
-          <button className="btn btn-ghost" onClick={() => onDuplicar(proyecto.id)}>
-            Duplicar
+          <button className="icon-btn" title="Duplicar" onClick={() => onDuplicar(proyecto.id)}>
+            <Copy size={16} />
           </button>
-          <button className="btn btn-ghost btn-danger" onClick={() => onEliminar(proyecto.id)}>
-            Eliminar
+          <button className="icon-btn icon-btn-danger" title="Eliminar" onClick={() => onEliminar(proyecto.id)}>
+            <Trash2 size={16} />
           </button>
         </div>
       </div>

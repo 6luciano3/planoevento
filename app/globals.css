@@ -123,6 +123,7 @@ button { font: inherit; cursor: pointer; }
 }
 .icon-btn:hover { background: var(--paper-alt); color: var(--ink); }
 .icon-btn-active { background: var(--accent-soft); color: var(--accent-ink); }
+.icon-btn-danger:hover { background: var(--danger-soft); color: var(--danger); }
 .icon-btn-sm { width: 26px; height: 26px; }
 .icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
@@ -141,7 +142,18 @@ button { font: inherit; cursor: pointer; }
 .badge { display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; }
 .badge-borrador { background: var(--warn-soft); color: var(--warn); }
 .badge-completo { background: var(--good-soft); color: var(--good); }
-.badge-exportado { background: var(--accent-soft); color: var(--accent-ink); }
+.badge-exportado { background: var(--info-soft); color: var(--info); }
+
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.stat-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow-sm); }
+.stat-card strong { display: block; font-size: 24px; font-weight: 800; }
+.stat-card span { font-size: 13px; color: var(--ink-soft); }
+@media (max-width: 720px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+
+.projects-toolbar { display: flex; gap: 10px; margin-bottom: 20px; }
+.projects-toolbar .input { max-width: 340px; }
+.projects-toolbar select.input { max-width: 220px; }
+@media (max-width: 640px) { .projects-toolbar { flex-direction: column; } .projects-toolbar .input, .projects-toolbar select.input { max-width: none; } }
 
 /* Project cards */
 .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
@@ -150,7 +162,7 @@ button { font: inherit; cursor: pointer; }
 .project-card-body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; }
 .project-card-body h3 { font-size: 16.5px; }
 .project-card-meta { font-size: 13px; color: var(--ink-faint); font-family: "IBM Plex Mono", monospace; }
-.project-card-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.project-card-actions { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
 .empty-state { border: 1px dashed var(--line-strong); border-radius: var(--radius); padding: 48px 24px; text-align: center; color: var(--ink-soft); }
 
 /* Forms */
