@@ -336,6 +336,10 @@ legend { font-family: "Inter", sans-serif; font-weight: 700; font-size: 14px; pa
 .callout-info { padding: 16px 18px; border: 1px solid var(--good); background: var(--good-soft); border-radius: var(--radius); color: var(--good); font-size: 14px; }
 
 /* Review checklist */
+.review-groups { display: flex; flex-direction: column; gap: 22px; max-width: 760px; }
+.review-group-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+.review-group-head h3 { font-size: 14.5px; }
+.review-group-head .mono { font-size: 12.5px; color: var(--ink-faint); }
 .review-list { display: flex; flex-direction: column; gap: 10px; }
 .review-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
 .review-item-ok { border-left: 3px solid var(--good); }

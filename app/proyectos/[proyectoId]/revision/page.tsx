@@ -7,6 +7,13 @@ import { obtenerProyecto } from "@/services/project.service";
 import { ejecutarRevision } from "@/config/validation-rules";
 import { useEffect, useState } from "react";
 import type { ProyectoPlano } from "@/types/project";
+import type { CategoriaRevision, ItemRevision } from "@/types/plan";
+
+const CATEGORIAS: { id: CategoriaRevision; label: string }[] = [
+  { id: "documento", label: "Datos del documento" },
+  { id: "distribucion", label: "Distribución del evento" },
+  { id: "seguridad", label: "Seguridad y salida" },
+];
 
 /** Pantalla 21 — Revisión del plano (PRD §15, HU-ORG-36). Advierte, no aprueba. */
 export default function RevisionPage() {
@@ -21,6 +28,7 @@ export default function RevisionPage() {
 
   const items = ejecutarRevision(proyecto);
   const pendientes = items.filter((i) => !i.completado).length;
+  const porCategoria = (cat: CategoriaRevision): ItemRevision[] => items.filter((i) => i.categoria === cat);
 
   return (
     <>
@@ -36,15 +44,32 @@ export default function RevisionPage() {
           </span>
         </div>
 
-        <div className="review-list">
-          {items.map((item) => (
-            <div key={item.id} className={`review-item ${item.completado ? "review-item-ok" : "review-item-warn"}`}>
-              <div>
-                <strong>{item.descripcion}</strong>
-                <p>{item.completado ? "Correcto." : item.mensaje}</p>
+        <div className="review-groups">
+          {CATEGORIAS.map(({ id, label }) => {
+            const deLaCategoria = porCategoria(id);
+            if (deLaCategoria.length === 0) return null;
+            const completos = deLaCategoria.filter((i) => i.completado).length;
+            return (
+              <div className="review-group" key={id}>
+                <div className="review-group-head">
+                  <h3>{label}</h3>
+                  <span className="mono">
+                    {completos}/{deLaCategoria.length}
+                  </span>
+                </div>
+                <div className="review-list">
+                  {deLaCategoria.map((item) => (
+                    <div key={item.id} className={`review-item ${item.completado ? "review-item-ok" : "review-item-warn"}`}>
+                      <div>
+                        <strong>{item.descripcion}</strong>
+                        <p>{item.completado ? "Correcto." : item.mensaje}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="legal-strip" style={{ marginTop: 24, maxWidth: 760 }}>

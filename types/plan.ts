@@ -43,8 +43,11 @@ export interface ItemLeyenda {
   visible: boolean;
 }
 
+export type CategoriaRevision = "documento" | "distribucion" | "seguridad";
+
 export interface ItemRevision {
   id: string;
+  categoria: CategoriaRevision;
   descripcion: string;
   completado: boolean;
   mensaje: string;
