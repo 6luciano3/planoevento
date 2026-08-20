@@ -296,7 +296,8 @@ section { padding: clamp(48px,7vw,80px) 0; }
 @media (max-width: 640px) { .feature-grid { grid-template-columns: 1fr; } }
 
 .rubro-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; max-width: 1180px; margin: 0 auto; padding: 0 clamp(20px,5vw,56px); }
-.rubro-item { display: flex; align-items: center; gap: 12px; padding: 16px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.rubro-item { display: flex; align-items: center; gap: 12px; padding: 16px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); font-size: 13.5px; font-weight: 600; color: var(--ink); text-decoration: none; transition: border-color .15s, transform .15s, box-shadow .15s; }
+.rubro-item:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
 .rubro-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; background: var(--accent-soft); color: var(--accent-ink); }
 @media (max-width: 980px) { .rubro-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 560px) { .rubro-grid { grid-template-columns: 1fr; } }
