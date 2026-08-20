@@ -1,0 +1,12 @@
+export interface CapaPlano {
+  id: string;
+  nombre: string;
+  orden: number;
+  visible: boolean;
+  bloqueada: boolean;
+  color: string;
+  transparencia: number;
+  incluirEnImpresion: boolean;
+  /** true para la capa base importada de TopoExport o de un archivo propio. */
+  esBase?: boolean;
+}
