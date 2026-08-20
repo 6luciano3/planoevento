@@ -28,7 +28,7 @@ export interface Evento {
 }
 
 export interface BaseImportada {
-  origen: "topoexport" | "archivo_propio" | "ninguna";
+  origen: "openstreetmap" | "archivo_propio" | "ninguna";
   capasTopo: CapaTopoId[];
   estadoImportacion?: EstadoImportacionTopo;
   archivoNombre?: string;

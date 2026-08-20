@@ -19,7 +19,7 @@ export default function LandingPage() {
             <a href="#como-funciona">Cómo funciona</a>
             <a href="#biblioteca">Biblioteca</a>
             <a href="#rubros">Rubros</a>
-            <a href="#topoexport">TopoExport</a>
+            <a href="#openstreetmap">OpenStreetMap</a>
             <a href="#revision">Revisión y PDF</a>
           </nav>
 
@@ -54,7 +54,7 @@ export default function LandingPage() {
               </div>
               <div className="trust-line">
                 <span>Sin conocimientos de arquitectura</span>
-                <span>Base geográfica con TopoExport</span>
+                <span>Base geográfica con OpenStreetMap</span>
                 <span>Escala y medidas reales</span>
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function LandingPage() {
               <div className="step">
                 <div className="step-num">01</div>
                 <h3>Ubicá el predio</h3>
-                <p>Buscá la dirección o dibujá el área del evento sobre el mapa. Traé parcelas, calles y árboles reales con TopoExport, o calibrá un plano propio.</p>
+                <p>Buscá la dirección o dibujá el área del evento sobre el mapa. Traé calles, edificios y árboles reales con OpenStreetMap, o calibrá un plano propio.</p>
               </div>
               <div className="step">
                 <div className="step-num">02</div>
@@ -150,25 +150,27 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="topoexport" className="rule-top">
+        <section id="openstreetmap" className="rule-top">
           <div className="wrap split">
             <div>
               <span className="eyebrow">Base geográfica</span>
               <h2>Un terreno real debajo de cada plano</h2>
               <p className="sub">
-                TopoExport entrega parcelas, edificios, calles, árboles y áreas verdes del predio elegido.
-                PlanoEvento las incorpora como una capa bloqueada, lista para dibujar encima.
+                OpenStreetMap entrega edificios, calles, cursos de agua, árboles y áreas verdes reales del predio
+                elegido — gratis, sin cuenta. PlanoEvento las incorpora como una capa bloqueada, lista para dibujar
+                encima.
               </p>
               <div className="fine">
-                TopoExport no crea los elementos del evento ni aprueba el plano: solamente aporta la base del
-                terreno. Si no hay cobertura suficiente, siempre podés importar un plano propio y calibrar la escala.
+                OpenStreetMap no crea los elementos del evento ni aprueba el plano: solamente aporta la base del
+                terreno. Si no hay cobertura suficiente en tu zona, siempre podés importar un plano propio y
+                calibrar la escala.
               </div>
             </div>
             <div className="layer-stack">
               {[
-                { nombre: "Parcelas", color: "#D9CBB2" },
                 { nombre: "Edificios", color: "#B7A98C" },
                 { nombre: "Calles", color: "#9C9C9C" },
+                { nombre: "Cursos de agua", color: "#8FB0C7" },
                 { nombre: "Árboles", color: "#8FB79B" },
                 { nombre: "Áreas verdes", color: "#A9CDB4" },
               ].map((l) => (
@@ -214,7 +216,7 @@ export default function LandingPage() {
           <div className="wrap cta-inner">
             <div>
               <h2>Tu próxima feria ya tiene lugar para cada stand.</h2>
-              <p className="sub">Empezá con un predio vacío o traé la base con TopoExport.</p>
+              <p className="sub">Empezá con un predio vacío o traé la base con OpenStreetMap.</p>
             </div>
             <Link className="btn btn-solid btn-lg" href="/proyectos/nuevo">
               Crear plano gratis

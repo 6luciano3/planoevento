@@ -7,6 +7,6 @@ export interface CapaPlano {
   color: string;
   transparencia: number;
   incluirEnImpresion: boolean;
-  /** true para la capa base importada de TopoExport o de un archivo propio. */
+  /** true para la capa base importada de OpenStreetMap o de un archivo propio. */
   esBase?: boolean;
 }

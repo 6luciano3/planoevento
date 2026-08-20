@@ -29,7 +29,7 @@ export default function IniciarSesionPage() {
     <AuthLayout
       asideTitle="Retomá tu plano donde lo dejaste"
       asideText="Tus proyectos, componentes y configuraciones quedan guardados en tu cuenta."
-      asideItems={["Base geográfica con TopoExport", "Biblioteca completa de componentes", "Exportación a PDF a escala real"]}
+      asideItems={["Base geográfica con OpenStreetMap", "Biblioteca completa de componentes", "Exportación a PDF a escala real"]}
       switchText="¿Todavía no tenés una cuenta?"
       switchHref="/auth/registro"
       switchLabel="Crear cuenta"

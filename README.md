@@ -36,16 +36,19 @@ hace falta configurar base de datos para probarlo.
 
 ## Variables de entorno
 
-Copiar `.env.example` a `.env.local` y completar cuando haya credenciales
-reales de TopoExport. Sin ellas, `services/topoexport.service.ts` simula el
-flujo de consulta e importación para poder probar la Pantalla de ubicación.
+Copiar `.env.example` a `.env.local` si querés apuntar `OVERPASS_API_URL` a
+otra instancia de Overpass — no es obligatorio, la base geográfica
+(Pantalla 09) usa por defecto la API pública de OpenStreetMap, que es
+gratuita y no pide cuenta ni clave.
 
 ## Qué es un prototipo funcional y qué es un placeholder
 
 - **Funcional hoy:** proyectos, editor con arrastrar y soltar, capas,
   propiedades, deshacer/rehacer, guardado automático, revisión, exportación
-  por impresión.
-- **Placeholder documentado:** `app/api/*` (backend real), autenticación
-  real, integración real con TopoExport, generación de PDF en servidor. Cada
-  uno tiene comentarios en el código señalando dónde y cómo reemplazarlos —
-  ver también PRD §22 "Etapas de desarrollo".
+  por impresión, base geográfica real con OpenStreetMap.
+- **Placeholder documentado:** `app/api/proyectos`, `app/api/planos`,
+  `app/api/archivos` y `app/api/exportacion/pdf` (backend real y PDF
+  generado en servidor — hoy se exporta vía impresión del navegador),
+  autenticación real. `app/api/openstreetmap/*` es la excepción: ya llama a
+  datos reales. Cada placeholder tiene comentarios en el código señalando
+  dónde y cómo reemplazarlo — ver también PRD §22 "Etapas de desarrollo".

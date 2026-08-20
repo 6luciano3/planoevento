@@ -16,8 +16,8 @@ aplicación") ya lo anticipaba en su sección final.
 | 6 | Nuevo proyecto | `app/proyectos/nuevo/page.tsx` | ✅ Completa |
 | 7 | Datos del proyecto | *(pendiente de ruta propia)* | ⏳ Editar vía `services/project.service.ts#guardarProyecto` |
 | 8 | Ubicación del predio | `app/proyectos/[proyectoId]/ubicacion/page.tsx` | ✅ Completa — Leaflet + OpenStreetMap (buscar dirección, marcar punto, dibujar límite); paso 2/4 del asistente |
-| 9 | Configuración de TopoExport | `app/proyectos/[proyectoId]/plano-base/page.tsx` | ✅ Completa — paso 3/4 del asistente, selección real de capas (`hooks/useTopoExport.ts`) |
-| 10 | Resultado de importación | `app/proyectos/[proyectoId]/plano-base/page.tsx` (mismo paso) | ✅ Muestra el aviso real cuando TopoExport no está configurado en vez de simular éxito |
+| 9 | Configuración del plano base | `app/proyectos/[proyectoId]/plano-base/page.tsx` | ✅ Completa — paso 3/4 del asistente, selección real de capas de OpenStreetMap (`hooks/useOpenStreetMap.ts`) |
+| 10 | Resultado de importación | `app/proyectos/[proyectoId]/plano-base/page.tsx` (mismo paso) | ✅ Muestra el aviso real cuando OpenStreetMap no tiene datos para la zona en vez de simular éxito |
 | 11 | Importar plano propio | `app/proyectos/[proyectoId]/plano-base/page.tsx` (mismo paso) | ✅ Completa — `services/file.service.ts` |
 | 12 | Calibrar plano | *(pendiente de ruta propia)* | ⏳ `editor/geometry/scale.ts#calcularFactorEscala` listo; falta la UI |
 | 13 | Papel y escala | `app/proyectos/[proyectoId]/exportar/page.tsx` (panel "Configuración de salida") | ✅ Completa — edita `plano.hoja` de verdad (tamaño, orientación, cuadrícula) |

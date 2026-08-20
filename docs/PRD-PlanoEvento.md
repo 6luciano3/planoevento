@@ -176,11 +176,19 @@ Las validaciones son advertencias de preparación. No reemplazan los criterios t
 | 21 | Revisión del plano | Detectar advertencias y datos faltantes |
 | 22 | Imprimir y exportar | Generar la presentación final |
 
-> **Nota de implementación (prototipo actual):** las pantallas 8 a 14 se
-> resolvieron como pasos de un único asistente (`app/proyectos/nuevo`) en
-> vez de rutas separadas, y las pantallas 16/18/19/20 son paneles dentro del
-> Editor principal (§16 del documento "Pantallas necesarias de la
-> aplicación" ya anticipaba esta simplificación). Ver `docs/pantallas.md`.
+> **Nota de implementación (prototipo actual):** las pantallas 8 a 13 son
+> pasos de un asistente de 4 pasos (`app/proyectos/nuevo` → `.../ubicacion`
+> → `.../plano-base` → editor); 16/17/18 son paneles dentro del Editor
+> principal; 19 y 20 (Rótulo y Leyenda) son rutas propias enlazadas desde
+> ahí. Ver `docs/pantallas.md` para el detalle pantalla por pantalla.
+>
+> **TopoExport → OpenStreetMap:** el servicio TopoExport que describe la
+> sección 10 nunca tuvo una cuenta disponible para este proyecto (es un
+> servicio pago). La Pantalla 09 usa en cambio la API pública de Overpass
+> sobre datos de OpenStreetMap — gratuita, sin cuenta ni clave, con
+> cobertura real de edificios, calles, cursos de agua, árboles y áreas
+> verdes (no ofrece parcelas catastrales ni relieve/elevación, que
+> TopoExport sí prometía). Ver `lib/openstreetmap-client.ts`.
 
 ## 18. Requisitos funcionales
 RF-01 a RF-20: crear/editar/eliminar proyectos, guardar datos del evento, localizar el predio, incorporar TopoExport, importar imágenes/planos propios, calibrar mediante distancia conocida, configurar papel/orientación/escala, proporcionar plantillas, herramientas básicas de dibujo, arrastrar elementos, mover/rotar/duplicar/eliminar objetos, modificar propiedades, incluir plantas y árboles, administrar capas, generar leyenda, completar rótulo, validaciones previas, imprimir, exportar a PDF, conservar proyectos para edición posterior.

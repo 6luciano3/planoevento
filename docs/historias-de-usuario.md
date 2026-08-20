@@ -13,8 +13,8 @@ Ver también `docs/PRD-PlanoEvento.md`. Prioridad MVP salvo que se indique "Exte
 ## Módulo 2 — Ubicación y plano base
 - **HU-ORG-07 — Buscar la ubicación del evento.** Dirección, localidad, coordenadas o selección manual en el mapa.
 - **HU-ORG-08 — Delimitar el área de interés.** Dibujar un polígono, ver superficie y coordenadas.
-- **HU-ORG-09 — Obtener el plano base con TopoExport.** Consultar disponibilidad, elegir capas, importar como capas bloqueadas. *(`services/topoexport.service.ts`, `hooks/useTopoExport.ts`)*
-- **HU-ORG-10 — Administrar la base TopoExport.** Mostrar/ocultar, bloquear/desbloquear, transparencia, color, actualizar, eliminar.
+- **HU-ORG-09 — Obtener el plano base con OpenStreetMap.** Consultar disponibilidad, elegir capas, importar como capas bloqueadas. *(`services/openstreetmap.service.ts`, `hooks/useOpenStreetMap.ts`)*
+- **HU-ORG-10 — Administrar la base de OpenStreetMap.** Mostrar/ocultar, bloquear/desbloquear, transparencia, color, actualizar, eliminar.
 - **HU-ORG-11 — Importar un plano propio.** PNG, JPG, PDF, SVG, GeoJSON. *(`services/file.service.ts`)*
 - **HU-ORG-12 — Calibrar la escala de un archivo.** Marcar dos puntos, ingresar la distancia real, calcular el factor de escala. *(`editor/geometry/scale.ts#calcularFactorEscala`)*
 
@@ -62,13 +62,13 @@ Ver también `docs/PRD-PlanoEvento.md`. Prioridad MVP salvo que se indique "Exte
 - **HU-ADM-01 — Administrar categorías.** *(`symbols/symbol-types.ts`)*
 - **HU-ADM-02 — Administrar componentes.** *(`symbols/categories/*.ts`)*
 - **HU-ADM-03 — Administrar componentes de vegetación.**
-- **HU-ADM-04 — Configurar TopoExport.** Credenciales, capas habilitadas, disponibilidad, errores, consumo de API. *(`.env.example`, `services/topoexport.service.ts`)*
+- **HU-ADM-04 — Configurar la base geográfica.** Capas habilitadas, disponibilidad, errores. *(`.env.example`, `services/openstreetmap.service.ts`)* — a diferencia de TopoExport (pensado originalmente, requería cuenta paga), OpenStreetMap vía Overpass es gratis y no pide credenciales.
 
 ## Matriz resumida
 | Módulo | HU | MVP | Extensión |
 |---|---|---|---|
 | Acceso y proyectos | 6 | 5 | 1 |
-| Ubicación y TopoExport | 6 | 6 | 0 |
+| Ubicación y base geográfica (OpenStreetMap) | 6 | 6 | 0 |
 | Hoja de trabajo | 2 | 2 | 0 |
 | Edición y dibujo | 4 | 4 | 0 |
 | Biblioteca de componentes | 8 | 8 | 0 |

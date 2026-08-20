@@ -2,26 +2,30 @@
 
 import { useState, useCallback } from "react";
 import type { CapaTopoId, ResultadoImportacionTopo } from "@/types/topoexport";
-import type { Predio } from "@/types/location";
-import * as topoExportService from "@/services/topoexport.service";
+import type { Predio, Coordenadas } from "@/types/location";
+import * as osmService from "@/services/openstreetmap.service";
 
-/** Flujo de la Pantalla 04 — Configurar importación TopoExport (HU-ORG-09). */
-export function useTopoExport(predio: Pick<Predio, "latitud" | "longitud">) {
+type PredioParaConsulta = Pick<Predio, "latitud" | "longitud"> & { limite?: Coordenadas[] };
+
+/** Flujo de la Pantalla 09 — Plano base con OpenStreetMap (HU-ORG-09). */
+export function useOpenStreetMap(predio: PredioParaConsulta) {
   const [consultando, setConsultando] = useState(false);
   const [capasDisponibles, setCapasDisponibles] = useState<CapaTopoId[]>([]);
   const [resultado, setResultado] = useState<ResultadoImportacionTopo | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const consultar = useCallback(async () => {
     setConsultando(true);
-    const { capas } = await topoExportService.consultarDisponibilidad(predio);
+    const { capas, error: err } = await osmService.consultarDisponibilidad(predio);
     setCapasDisponibles(capas);
+    setError(err ?? null);
     setConsultando(false);
   }, [predio]);
 
   const importar = useCallback(
     async (capasSeleccionadas: CapaTopoId[]) => {
       setConsultando(true);
-      const res = await topoExportService.importarCapas(predio, capasSeleccionadas);
+      const res = await osmService.importarCapas(predio, capasSeleccionadas);
       setResultado(res);
       setConsultando(false);
       return res;
@@ -29,5 +33,5 @@ export function useTopoExport(predio: Pick<Predio, "latitud" | "longitud">) {
     [predio]
   );
 
-  return { consultando, capasDisponibles, resultado, consultar, importar };
+  return { consultando, capasDisponibles, resultado, error, consultar, importar };
 }

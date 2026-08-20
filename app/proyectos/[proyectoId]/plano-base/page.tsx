@@ -6,7 +6,7 @@ import { Globe2, Upload } from "lucide-react";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { WizardSteps } from "@/components/layout/WizardSteps";
 import { obtenerProyecto, guardarProyecto } from "@/services/project.service";
-import { useTopoExport } from "@/hooks/useTopoExport";
+import { useOpenStreetMap } from "@/hooks/useOpenStreetMap";
 import { importarArchivo, extensionValida } from "@/services/file.service";
 import type { ProyectoPlano } from "@/types/project";
 import type { CapaTopoId } from "@/types/topoexport";
@@ -28,7 +28,7 @@ export default function PlanoBasePage() {
   const { proyectoId } = useParams<{ proyectoId: string }>();
   const router = useRouter();
   const [proyecto, setProyecto] = useState<ProyectoPlano | null>(null);
-  const [origen, setOrigen] = useState<"topoexport" | "archivo_propio">("topoexport");
+  const [origen, setOrigen] = useState<"openstreetmap" | "archivo_propio">("openstreetmap");
   const [capasElegidas, setCapasElegidas] = useState<Set<CapaTopoId>>(new Set());
   const [archivo, setArchivo] = useState<{ nombre: string } | null>(null);
   const [errorArchivo, setErrorArchivo] = useState<string | null>(null);
@@ -38,16 +38,18 @@ export default function PlanoBasePage() {
     setProyecto(obtenerProyecto(proyectoId) ?? null);
   }, [proyectoId]);
 
-  const topo = useTopoExport(proyecto?.predio ?? { latitud: 0, longitud: 0 });
+  const osm = useOpenStreetMap(
+    proyecto ? { latitud: proyecto.predio.latitud, longitud: proyecto.predio.longitud, limite: proyecto.predio.limite } : { latitud: 0, longitud: 0 }
+  );
 
   useEffect(() => {
-    if (proyecto && origen === "topoexport") topo.consultar();
+    if (proyecto && origen === "openstreetmap") osm.consultar();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [proyecto?.id]);
 
   useEffect(() => {
-    setCapasElegidas(new Set(topo.capasDisponibles.filter((c) => c !== "terreno" && c !== "ferrocarriles" && c !== "cursos_agua")));
-  }, [topo.capasDisponibles]);
+    setCapasElegidas(new Set(osm.capasDisponibles));
+  }, [osm.capasDisponibles]);
 
   if (!proyecto) return <div className="editor-canvas-empty">Cargando…</div>;
 
@@ -72,13 +74,13 @@ export default function PlanoBasePage() {
     setArchivo({ nombre: importado.nombre });
   }
 
-  async function continuarConTopoExport() {
+  async function continuarConOpenStreetMap() {
     if (!proyecto) return;
-    const resultado = await topo.importar(Array.from(capasElegidas));
+    const resultado = await osm.importar(Array.from(capasElegidas));
     guardarProyecto({
       ...proyecto,
       base: {
-        origen: "topoexport",
+        origen: "openstreetmap",
         capasTopo: resultado.capasImportadas,
         estadoImportacion: resultado.estado,
       },
@@ -112,12 +114,12 @@ export default function PlanoBasePage() {
         <div className="wizard-source-grid">
           <button
             type="button"
-            className={`wizard-source-card ${origen === "topoexport" ? "wizard-source-card-active" : ""}`}
-            onClick={() => setOrigen("topoexport")}
+            className={`wizard-source-card ${origen === "openstreetmap" ? "wizard-source-card-active" : ""}`}
+            onClick={() => setOrigen("openstreetmap")}
           >
             <Globe2 size={20} />
-            <strong>Obtener con TopoExport</strong>
-            <span>Parcelas, calles, edificios y vegetación reales del predio elegido.</span>
+            <strong>Obtener con OpenStreetMap</strong>
+            <span>Edificios, calles, cursos de agua y árboles reales del predio elegido — gratis, sin cuenta.</span>
           </button>
           <button
             type="button"
@@ -130,26 +132,30 @@ export default function PlanoBasePage() {
           </button>
         </div>
 
-        {origen === "topoexport" ? (
+        {origen === "openstreetmap" ? (
           <div>
-            {topo.consultando ? <p className="field-hint">Consultando disponibilidad…</p> : null}
-            {!topo.consultando && topo.capasDisponibles.length === 0 ? (
+            {osm.consultando ? <p className="field-hint">Consultando OpenStreetMap…</p> : null}
+            {!osm.consultando && osm.capasDisponibles.length === 0 ? (
               <div className="callout-info" style={{ borderColor: "var(--warn)", background: "var(--warn-soft)", color: "var(--warn)" }}>
-                TopoExport todavía no está conectado con una cuenta para esta ubicación (ver .env.example — falta
-                TOPOEXPORT_API_KEY, o no hay cobertura acá). Podés importar un plano propio o continuar sin base
-                geográfica y agregarla más adelante.
+                {osm.error
+                  ? `No se pudo consultar OpenStreetMap: ${osm.error}`
+                  : "OpenStreetMap no tiene datos mapeados para esta ubicación todavía."}{" "}
+                Podés importar un plano propio o continuar sin base geográfica y agregarla más adelante.
               </div>
             ) : (
               <>
                 <h3 style={{ fontSize: 14, marginBottom: 10 }}>Capas disponibles</h3>
                 <div className="capa-topo-grid">
-                  {TODAS_LAS_CAPAS.filter((id) => topo.capasDisponibles.includes(id)).map((id) => (
+                  {TODAS_LAS_CAPAS.filter((id) => osm.capasDisponibles.includes(id)).map((id) => (
                     <label className="capa-topo-item" key={id}>
                       <input type="checkbox" checked={capasElegidas.has(id)} onChange={() => alternarCapa(id)} />
                       {ETIQUETAS_CAPA[id]}
                     </label>
                   ))}
                 </div>
+                <p className="field-hint" style={{ marginTop: 10 }}>
+                  Datos de © colaboradores de OpenStreetMap, vía la API pública de Overpass.
+                </p>
               </>
             )}
           </div>
@@ -174,8 +180,8 @@ export default function PlanoBasePage() {
           <button className="btn btn-ghost" onClick={omitir}>
             Omitir por ahora
           </button>
-          {origen === "topoexport" ? (
-            <button className="btn btn-solid" onClick={continuarConTopoExport} disabled={capasElegidas.size === 0}>
+          {origen === "openstreetmap" ? (
+            <button className="btn btn-solid" onClick={continuarConOpenStreetMap} disabled={capasElegidas.size === 0}>
               Importar capas y continuar
             </button>
           ) : (
