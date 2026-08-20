@@ -59,15 +59,13 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="hero-sheet ticked">
-              <span className="tick-bl"></span>
-              <span className="tick-br"></span>
+            <div className="hero-sheet">
               <div className="hero-sheet-inner">
                 <svg viewBox="0 0 520 260" role="img" aria-label="Boceto de un plano de feria con stands, accesos y referencias">
                   <path d="M40 20 L440 20 L440 200 L40 200 Z" fill="none" stroke="var(--ink)" strokeWidth="1.6" strokeDasharray="6 5" />
                   <g transform="translate(468,32)">
                     <path d="M0 -18 L6 5 L0 0 L-6 5 Z" fill="var(--ink)" />
-                    <text x="0" y="16" textAnchor="middle" fontFamily="Archivo, sans-serif" fontSize="10" fontWeight={700} fill="var(--ink)">N</text>
+                    <text x="0" y="16" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="10" fontWeight={700} fill="var(--ink)">N</text>
                   </g>
                   <g>
                     <rect x="70" y="50" width="30" height="26" fill="var(--accent-soft)" stroke="var(--accent)" strokeWidth="1.1" />
@@ -78,11 +76,11 @@ export default function LandingPage() {
                     <text x="157" y="67" textAnchor="middle" fontFamily="IBM Plex Mono" fontSize="8" fill="var(--accent-ink)">A03</text>
                   </g>
                   <rect x="260" y="50" width="100" height="70" fill="none" stroke="var(--ink-soft)" strokeWidth="1.1" strokeDasharray="3 3" />
-                  <text x="310" y="88" textAnchor="middle" fontFamily="Archivo, sans-serif" fontSize="9" fontWeight={600} fill="var(--ink-soft)">ESCENARIO</text>
+                  <text x="310" y="88" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="9" fontWeight={600} fill="var(--ink-soft)">ESCENARIO</text>
                   <g transform="translate(280,220)">
                     <rect x="0" y="0" width="140" height="34" fill="var(--surface)" stroke="var(--ink)" strokeWidth="1" />
                     <line x1="0" y1="17" x2="140" y2="17" stroke="var(--line-strong)" strokeWidth="1" />
-                    <text x="8" y="12" fontFamily="Archivo, sans-serif" fontSize="8.5" fontWeight={700} fill="var(--ink)">PLANO GENERAL</text>
+                    <text x="8" y="12" fontFamily="Inter, sans-serif" fontSize="8.5" fontWeight={700} fill="var(--ink)">PLANO GENERAL</text>
                     <text x="8" y="28" fontFamily="IBM Plex Mono" fontSize="7.5" fill="var(--ink-soft)">ESCALA 1:500 · HOJA A1</text>
                   </g>
                 </svg>
@@ -166,9 +164,7 @@ export default function LandingPage() {
                 terreno. Si no hay cobertura suficiente, siempre podés importar un plano propio y calibrar la escala.
               </div>
             </div>
-            <div className="layer-stack ticked">
-              <span className="tick-bl"></span>
-              <span className="tick-br"></span>
+            <div className="layer-stack">
               {[
                 { nombre: "Parcelas", color: "#D9CBB2" },
                 { nombre: "Edificios", color: "#B7A98C" },
@@ -260,7 +256,7 @@ const LANDING_CSS = `
 .site-header { position: sticky; top: 0; z-index: 40; background: color-mix(in srgb, var(--paper) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .nav-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 68px; max-width: 1180px; margin: 0 auto; padding: 0 clamp(20px,5vw,56px); }
 .primary-nav { display: flex; gap: 28px; }
-.primary-nav a { text-decoration: none; font-family: "Archivo", sans-serif; font-weight: 600; font-size: 14.5px; color: var(--ink-soft); }
+.primary-nav a { text-decoration: none; font-family: "Inter", sans-serif; font-weight: 600; font-size: 14.5px; color: var(--ink-soft); }
 .primary-nav a:hover { color: var(--ink); }
 .nav-actions { display: flex; align-items: center; gap: 10px; }
 @media (max-width: 860px) { .primary-nav { display: none; } }
@@ -316,7 +312,7 @@ section { padding: clamp(48px,7vw,80px) 0; }
 .callout .tag { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; text-transform: uppercase; }
 .callout.yes { border-left: 3px solid var(--good); } .callout.yes .tag { color: var(--good); }
 .callout.no { border-left: 3px solid var(--ink-faint); } .callout.no .tag { color: var(--ink-faint); }
-.callout .msg { margin-top: 10px; font-family: "Archivo", sans-serif; font-weight: 600; font-size: 15px; }
+.callout .msg { margin-top: 10px; font-family: "Inter", sans-serif; font-weight: 600; font-size: 15px; }
 .callout.no .msg { text-decoration: line-through; color: var(--ink-faint); }
 .callout .note { margin-top: 8px; font-size: 13px; color: var(--ink-soft); }
 @media (max-width: 860px) { .callouts { grid-template-columns: 1fr; } }

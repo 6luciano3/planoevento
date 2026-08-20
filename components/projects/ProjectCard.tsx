@@ -12,9 +12,7 @@ interface ProjectCardProps {
 /** Pantalla 05 — "Mis planos": una tarjeta por proyecto. */
 export function ProjectCard({ proyecto, onDuplicar, onEliminar }: ProjectCardProps) {
   return (
-    <article className="project-card ticked">
-      <span className="tick-bl"></span>
-      <span className="tick-br"></span>
+    <article className="project-card">
       <div className="project-card-thumb" aria-hidden="true">
         <svg viewBox="0 0 100 70">
           <rect x="4" y="4" width="92" height="62" fill="none" stroke="var(--line-strong)" strokeDasharray="3 3" />
