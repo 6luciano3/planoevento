@@ -5,13 +5,19 @@ distribución espacial sobre el lienzo — ver PRD, sección "2. Elementos
 colocados sobre el plano".
 
 ## Estado actual
-Ya están dibujados los símbolos que usa la demo del editor:
+Símbolos ya dibujados — la demo inicial más los que más se usan en una
+feria real (stands, gastronomía, sanitarios separados por género,
+estacionamiento, generador, ambulancia):
 
-- `stands/stand-simple.svg`, `stands/escenario.svg`
+- `stands/stand-simple.svg`, `stands/escenario.svg`, `stands/carpa.svg`
 - `accesos/entrada.svg`, `accesos/salida.svg`, `accesos/salida-emergencia.svg`
-- `sanitarios/bano-accesible.svg`
-- `emergencias/primeros-auxilios.svg`, `emergencias/extintor.svg`
-- `residuos/tacho-basura.svg`
+- `sanitarios/bano-accesible.svg`, `sanitarios/bano-hombres.svg`, `sanitarios/bano-mujeres.svg`
+- `emergencias/primeros-auxilios.svg`, `emergencias/extintor.svg`, `emergencias/ambulancia.svg`, `emergencias/punto-encuentro.svg`
+- `residuos/tacho-basura.svg`, `residuos/contenedor.svg`
+- `gastronomia/puesto-gastronomico.svg`, `gastronomia/food-truck.svg`
+- `estacionamiento/automovil.svg`
+- `electricidad/generador.svg`
+- `agua-gas/punto-agua.svg`
 - `vegetacion/arbol-mediano.svg`
 - `senalizacion/flecha-norte.svg`
 
