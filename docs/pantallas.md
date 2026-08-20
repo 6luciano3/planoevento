@@ -15,7 +15,7 @@ aplicación") ya lo anticipaba en su sección final.
 | 5 | Mis proyectos | `app/proyectos/page.tsx` | ✅ Completa |
 | 6 | Nuevo proyecto | `app/proyectos/nuevo/page.tsx` | ✅ Completa |
 | 7 | Datos del proyecto | *(pendiente de ruta propia)* | ⏳ Editar vía `services/project.service.ts#guardarProyecto` |
-| 8 | Ubicación del predio | *(pendiente de ruta propia)* | ⏳ Tipos y store listos (`types/location.ts`); falta el mapa interactivo |
+| 8 | Ubicación del predio | `app/proyectos/[proyectoId]/ubicacion/page.tsx` | ✅ Completa — Leaflet + OpenStreetMap (buscar dirección, marcar punto, dibujar límite) |
 | 9 | Configuración de TopoExport | *(pendiente de ruta propia)* | ⏳ Lógica lista (`hooks/useTopoExport.ts`); falta la UI de selección de capas |
 | 10 | Resultado de importación | *(pendiente de ruta propia)* | ⏳ `types/topoexport.ts#ResultadoImportacionTopo` ya define los 4 estados |
 | 11 | Importar plano propio | *(pendiente de ruta propia)* | ⏳ `services/file.service.ts` listo; falta la UI |

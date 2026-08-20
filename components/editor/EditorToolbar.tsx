@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Undo2, Redo2, ZoomIn, ZoomOut, Grid3x3, Eye, FileDown } from "lucide-react";
+import { Undo2, Redo2, ZoomIn, ZoomOut, Grid3x3, Eye, FileDown, MapPin } from "lucide-react";
 import { useEditorStore } from "@/store/editor-store";
 import { EDITOR_CONFIG } from "@/config/editor.config";
 import type { EstadoGuardado } from "@/hooks/useAutosave";
@@ -58,6 +58,9 @@ export function EditorToolbar({ proyectoId, proyectoNombre, estadoGuardado }: Ed
       </div>
 
       <div className="editor-toolbar-right">
+        <Link className="link-btn" href={`/proyectos/${proyectoId}/ubicacion`}>
+          <MapPin size={16} /> Ubicación
+        </Link>
         <Link className="link-btn" href={`/proyectos/${proyectoId}/revision`}>
           <Eye size={16} /> Revisar plano
         </Link>
