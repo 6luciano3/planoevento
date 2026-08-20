@@ -1,33 +1,15 @@
-import {
-  Utensils,
-  Palette,
-  Shirt,
-  ShoppingBasket,
-  Sprout,
-  Coffee,
-  Gem,
-} from "lucide-react";
+import { LISTA_TIPOS_STAND } from "@/config/tipos-stand";
 
-const RUBROS = [
-  { Icono: Utensils, etiqueta: "Gastronomía y food trucks" },
-  { Icono: Palette, etiqueta: "Arte y manualidades" },
-  { Icono: Shirt, etiqueta: "Indumentaria y textiles" },
-  { Icono: ShoppingBasket, etiqueta: "Almacén y productos regionales" },
-  { Icono: Sprout, etiqueta: "Vivero y plantas" },
-  { Icono: Coffee, etiqueta: "Cafetería y desayunos" },
-  { Icono: Gem, etiqueta: "Bijouterie y accesorios" },
-];
-
-/** Landing — rubros típicos que se arman con la biblioteca de stands. */
+/** Landing — rubros de stand que ofrece la biblioteca del editor (config/tipos-stand.ts). */
 export function TiposDeStand() {
   return (
     <div className="rubro-grid">
-      {RUBROS.map(({ Icono, etiqueta }) => (
-        <div className="rubro-item" key={etiqueta}>
-          <span className="rubro-icon">
+      {LISTA_TIPOS_STAND.map(({ id, nombre, icono: Icono, color }) => (
+        <div className="rubro-item" key={id}>
+          <span className="rubro-icon" style={{ background: `${color}1F`, color }}>
             <Icono size={22} />
           </span>
-          <span>{etiqueta}</span>
+          <span>{nombre}</span>
         </div>
       ))}
     </div>
