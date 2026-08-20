@@ -141,6 +141,7 @@ export function EditorCanvas() {
               key={objeto.id}
               transform={`translate(${xPx} ${yPx}) rotate(${objeto.rotacionGrados} ${wPx / 2} ${hPx / 2})`}
               onPointerDown={(e) => alPresionarObjeto(e, objeto.id, objeto.posicion)}
+              onClick={(e) => e.stopPropagation()}
               style={{ cursor: capaBloqueada(objeto.capaId) ? "not-allowed" : "grab" }}
             >
               {def ? (
