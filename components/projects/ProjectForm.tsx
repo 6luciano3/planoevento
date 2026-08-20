@@ -88,7 +88,7 @@ export function ProjectForm({ onCrear }: ProjectFormProps) {
 
       <div className="form-actions">
         <Button type="submit" size="lg">
-          Continuar al editor
+          Continuar a ubicación
         </Button>
       </div>
     </form>

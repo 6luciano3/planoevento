@@ -183,6 +183,39 @@ legend { font-family: "Inter", sans-serif; font-weight: 700; font-size: 14px; pa
 .checkbox-row small { display: block; color: var(--ink-faint); font-size: 12px; }
 @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
 
+/* Asistente "Nuevo proyecto" */
+.wizard-steps { display: flex; align-items: center; list-style: none; padding: 0; margin: 0 0 28px; max-width: 720px; }
+.wizard-step { display: flex; align-items: center; gap: 10px; flex: 1; }
+.wizard-step:last-child { flex: none; }
+.wizard-step-badge {
+  display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%;
+  font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600; flex-shrink: 0;
+  background: var(--paper-alt); color: var(--ink-faint); border: 1.5px solid var(--line-strong);
+}
+.wizard-step-hecho .wizard-step-badge { background: var(--good); color: #fff; border-color: var(--good); }
+.wizard-step-actual .wizard-step-badge { background: var(--accent); color: #fff; border-color: var(--accent); }
+.wizard-step-label { font-size: 13.5px; color: var(--ink-faint); white-space: nowrap; }
+.wizard-step-hecho .wizard-step-label, .wizard-step-actual .wizard-step-label { color: var(--ink); font-weight: 600; }
+.wizard-step-line { flex: 1; height: 1.5px; background: var(--line-strong); margin: 0 4px; }
+.wizard-step-hecho .wizard-step-line { background: var(--good); }
+@media (max-width: 720px) { .wizard-step-label { display: none; } }
+
+.wizard-source-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 720px; margin-bottom: 24px; }
+.wizard-source-card {
+  text-align: left; padding: 18px; border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--surface);
+  cursor: pointer; display: flex; flex-direction: column; gap: 6px;
+}
+.wizard-source-card:hover { border-color: var(--line-strong); }
+.wizard-source-card-active { border-color: var(--accent); background: var(--accent-soft); }
+.wizard-source-card strong { font-size: 14.5px; }
+.wizard-source-card span { font-size: 13px; color: var(--ink-soft); }
+@media (max-width: 640px) { .wizard-source-grid { grid-template-columns: 1fr; } }
+
+.capa-topo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 720px; }
+.capa-topo-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); cursor: pointer; }
+.capa-topo-item:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+@media (max-width: 640px) { .capa-topo-grid { grid-template-columns: 1fr; } }
+
 /* Ubicación del predio (Leaflet) */
 .location-map { display: flex; flex-direction: column; gap: 10px; max-width: 900px; }
 .location-map-search { position: relative; display: flex; gap: 8px; }
