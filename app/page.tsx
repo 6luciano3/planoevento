@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TiposDeStand } from "@/components/landing/TiposDeStand";
 
 export default function LandingPage() {
   return (
@@ -17,6 +18,7 @@ export default function LandingPage() {
           <nav className="primary-nav">
             <a href="#como-funciona">Cómo funciona</a>
             <a href="#biblioteca">Biblioteca</a>
+            <a href="#rubros">Rubros</a>
             <a href="#topoexport">TopoExport</a>
             <a href="#revision">Revisión y PDF</a>
           </nav>
@@ -133,6 +135,20 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section id="rubros" className="rule-top">
+          <div className="wrap">
+            <div className="section-head">
+              <span className="eyebrow">Para cualquier feria</span>
+              <h2>Pensado para los rubros que arman tu evento</h2>
+              <p className="sub">
+                Cada stand queda numerado con su rubro, así la leyenda del plano es clara para expositores,
+                proveedores y visitantes.
+              </p>
+            </div>
+            <TiposDeStand />
           </div>
         </section>
 
@@ -278,6 +294,12 @@ section { padding: clamp(48px,7vw,80px) 0; }
 .feature-card .code { margin-top: auto; padding-top: 8px; font-size: 10.5px; color: var(--ink-faint); }
 @media (max-width: 980px) { .feature-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 640px) { .feature-grid { grid-template-columns: 1fr; } }
+
+.rubro-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; max-width: 1180px; margin: 0 auto; padding: 0 clamp(20px,5vw,56px); }
+.rubro-item { display: flex; align-items: center; gap: 12px; padding: 16px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.rubro-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; background: var(--accent-soft); color: var(--accent-ink); }
+@media (max-width: 980px) { .rubro-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 560px) { .rubro-grid { grid-template-columns: 1fr; } }
 
 .split { display: grid; grid-template-columns: 1fr 0.92fr; gap: clamp(32px,5vw,60px); align-items: center; max-width: 1180px; margin: 0 auto; padding: 0 clamp(20px,5vw,56px); }
 .fine { margin-top: 16px; padding: 12px 14px; border-left: 2px solid var(--line-strong); font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-faint); line-height: 1.6; }
