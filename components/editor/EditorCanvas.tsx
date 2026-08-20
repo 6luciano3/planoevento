@@ -10,6 +10,36 @@ const ANCHO_PREDIO_M = 60;
 const ALTO_PREDIO_M = 40;
 
 /**
+ * No todos los ~90 componentes del catálogo tienen su SVG dibujado todavía
+ * (ver public/symbols/README.md). Si el archivo no existe, mostrar el
+ * ícono roto del navegador se ve peor que el rectángulo de color con el
+ * código — así que se cae a eso ante un error de carga.
+ */
+function IconoObjeto({ src, width, height, opacity, color, seleccionado }: {
+  src: string;
+  width: number;
+  height: number;
+  opacity: number;
+  color: string;
+  seleccionado: boolean;
+}) {
+  const [error, setError] = useState(false);
+  if (error) {
+    return (
+      <rect
+        width={width}
+        height={height}
+        fill={color}
+        fillOpacity={opacity * 0.22}
+        stroke={color}
+        strokeWidth={seleccionado ? 2 : 1.2}
+      />
+    );
+  }
+  return <image href={src} width={width} height={height} opacity={opacity} onError={() => setError(true)} />;
+}
+
+/**
  * Pantalla 15 — Editor principal. Lienzo SVG interactivo: recibe símbolos
  * arrastrados desde la biblioteca (HU-ORG-21) y permite moverlos, cada capa
  * respeta su visibilidad/bloqueo.
@@ -114,7 +144,14 @@ export function EditorCanvas() {
               style={{ cursor: capaBloqueada(objeto.capaId) ? "not-allowed" : "grab" }}
             >
               {def ? (
-                <image href={def.icono} width={wPx} height={hPx} opacity={objeto.transparencia / 100} />
+                <IconoObjeto
+                  src={def.icono}
+                  width={wPx}
+                  height={hPx}
+                  opacity={objeto.transparencia / 100}
+                  color={objeto.color}
+                  seleccionado={seleccionado}
+                />
               ) : (
                 <rect
                   width={wPx}

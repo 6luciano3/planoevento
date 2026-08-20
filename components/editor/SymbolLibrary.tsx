@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useMemo, type DragEvent } from "react";
+import { useMemo, useState, type DragEvent } from "react";
 import { buscarSimbolos, SYMBOL_CATALOG } from "@/symbols/symbol-catalog";
 import { CATEGORIAS } from "@/symbols/symbol-types";
 import { useSymbolStore } from "@/store/symbol-store";
@@ -9,6 +9,18 @@ import type { CategoriaSimbolo } from "@/types/symbol";
 
 interface SymbolLibraryProps {
   onArrastrarInicio: (event: DragEvent<HTMLElement>, simboloId: string) => void;
+}
+
+/**
+ * Muestra el SVG real del componente (public/symbols/…). Todavía no todos
+ * los ~90 elementos del catálogo tienen su archivo dibujado (ver
+ * public/symbols/README.md) — mientras no exista, cae en el cuadrado de
+ * color en vez de mostrar el ícono roto del navegador.
+ */
+function SymbolSwatch({ src, alt }: { src: string; alt: string }) {
+  const [error, setError] = useState(false);
+  if (error) return <span className="symbol-item-swatch" aria-hidden="true" />;
+  return <img className="symbol-item-swatch" src={src} alt={alt} onError={() => setError(true)} />;
 }
 
 /** Paleta izquierda del editor — Pantalla 17 "Biblioteca de elementos" (HU-ORG-19/20/21). */
@@ -60,7 +72,7 @@ export function SymbolLibrary({ onArrastrarInicio }: SymbolLibraryProps) {
             }}
             title={`${simbolo.nombre} · ${simbolo.defaultWidth}×${simbolo.defaultHeight} m`}
           >
-            <span className="symbol-item-swatch" aria-hidden="true" />
+            <SymbolSwatch src={simbolo.icono} alt="" />
             <span className="symbol-item-label">{simbolo.nombre}</span>
           </button>
         ))}
