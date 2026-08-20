@@ -348,9 +348,13 @@ legend { font-family: "Inter", sans-serif; font-weight: 700; font-size: 14px; pa
 .review-item p { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
 
 /* Print / export view */
-.print-sheet { background: var(--surface); border: 1px solid var(--line); }
+.export-layout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; margin: 24px auto 60px; max-width: 1180px; }
+.export-config { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow-sm); position: sticky; top: 24px; }
+@media (max-width: 900px) { .export-layout { grid-template-columns: 1fr; } .export-config { position: static; } }
+.print-sheet { background: var(--surface); border: 1px solid var(--line); padding: 32px; }
 @media print {
   .no-print { display: none !important; }
   body { background: #fff; }
   .print-sheet { border: none; box-shadow: none; }
+  .export-layout { display: block; margin: 0; max-width: none; }
 }
