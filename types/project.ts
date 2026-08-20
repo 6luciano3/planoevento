@@ -47,4 +47,6 @@ export interface ProyectoPlano {
   plano: Plano;
   capas: CapaPlano[];
   objetos: ObjetoPlano[];
+  /** Prefijos de leyenda que el organizador ocultó manualmente (Pantalla 20). */
+  leyendaOcultos?: string[];
 }

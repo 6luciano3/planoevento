@@ -33,7 +33,7 @@ export default function ExportarPage() {
 
   if (!proyecto) return <div className="editor-canvas-empty">Cargando…</div>;
 
-  const leyenda = generarLeyenda(proyecto);
+  const leyenda = generarLeyenda(proyecto).filter((item) => item.visible);
 
   function actualizarHoja(cambios: Partial<ProyectoPlano["plano"]["hoja"]>) {
     setProyecto((actual) => {
@@ -126,8 +126,9 @@ export default function ExportarPage() {
           <h3 style={{ fontSize: 14, marginBottom: 4 }}>Configuración de salida</h3>
 
           <div className="field">
-            <label>Tamaño de hoja</label>
+            <label htmlFor="tamano-hoja">Tamaño de hoja</label>
             <select
+              id="tamano-hoja"
               className="input"
               value={proyecto.plano.hoja.tamano}
               onChange={(e) => {
@@ -167,8 +168,8 @@ export default function ExportarPage() {
           </div>
 
           <div className="field">
-            <label>Apariencia</label>
-            <select className="input" value={apariencia} onChange={(e) => setApariencia(e.target.value as Apariencia)}>
+            <label htmlFor="apariencia-hoja">Apariencia</label>
+            <select id="apariencia-hoja" className="input" value={apariencia} onChange={(e) => setApariencia(e.target.value as Apariencia)}>
               <option value="color">Color</option>
               <option value="grises">Escala de grises</option>
               <option value="byn">Blanco y negro</option>

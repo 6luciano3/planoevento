@@ -16,12 +16,14 @@ export function generarLeyenda(proyecto: ProyectoPlano): ItemLeyenda[] {
     }
   }
 
+  const ocultos = new Set(proyecto.leyendaOcultos ?? []);
+
   return Array.from(conteos.entries()).map(([prefijo, info]) => ({
     id: prefijo,
     simbolo: prefijo,
     codigo: info.codigo,
     nombre: info.nombre,
     cantidad: info.cantidad,
-    visible: true,
+    visible: !ocultos.has(prefijo),
   }));
 }

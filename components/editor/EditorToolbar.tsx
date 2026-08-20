@@ -11,6 +11,8 @@ import {
   Eye,
   FileDown,
   MapPin,
+  FileText,
+  List,
   MousePointer2,
   Hand,
   Minus,
@@ -80,6 +82,12 @@ export function EditorToolbar({ proyectoId, proyectoNombre, estadoGuardado }: Ed
         <div className="editor-toolbar-right">
           <Link className="link-btn" href={`/proyectos/${proyectoId}/ubicacion`}>
             <MapPin size={16} /> Ubicación
+          </Link>
+          <Link className="link-btn" href={`/proyectos/${proyectoId}/rotulo`}>
+            <FileText size={16} /> Rótulo
+          </Link>
+          <Link className="link-btn" href={`/proyectos/${proyectoId}/leyenda`}>
+            <List size={16} /> Leyenda
           </Link>
           <Link className="link-btn" href={`/proyectos/${proyectoId}/revision`}>
             <Eye size={16} /> Revisar plano
