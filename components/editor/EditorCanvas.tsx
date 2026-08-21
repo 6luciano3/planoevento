@@ -8,6 +8,7 @@ import { distanciaEntrePuntos } from "@/editor/geometry/coordinates";
 import { aplicarGridSnap } from "@/editor/snapping/GridSnap";
 import { obtenerSimbolo } from "@/symbols/symbol-catalog";
 import { IconoObjeto } from "./IconoObjeto";
+import { FUENTE_TEXTO_DEFECTO } from "@/config/fonts";
 import type { Punto } from "@/types/location";
 import type { HerramientaEditor } from "@/types/editor";
 
@@ -357,7 +358,7 @@ export function EditorCanvas() {
           if (objeto.tipo === "texto") {
             return (
               <g key={objeto.id} {...comun}>
-                <text x={0} y={metrosAPixeles(1, zoom)} fontFamily="IBM Plex Mono, monospace" fontSize={metrosAPixeles(1.1, zoom)} fill={objeto.color} opacity={objeto.transparencia / 100}>
+                <text x={0} y={metrosAPixeles(1, zoom)} fontFamily={objeto.fontFamily || FUENTE_TEXTO_DEFECTO} fontSize={metrosAPixeles(1.1, zoom)} fill={objeto.color} opacity={objeto.transparencia / 100}>
                   {objeto.contenido}
                 </text>
                 {seleccionado ? <rect x={-4} y={-6} width={wPx + 8} height={hPx + 10} fill="none" stroke="var(--accent)" strokeWidth={1} strokeDasharray="3 2" /> : null}

@@ -5,6 +5,7 @@ import type { CapaPlano } from "@/types/layer";
 import { metrosAPixeles } from "@/editor/geometry/scale";
 import { obtenerSimbolo } from "@/symbols/symbol-catalog";
 import { IconoObjeto } from "./IconoObjeto";
+import { FUENTE_TEXTO_DEFECTO } from "@/config/fonts";
 
 const ANCHO_PREDIO_M = 60;
 const ALTO_PREDIO_M = 40;
@@ -92,7 +93,7 @@ export function PlanoSvg({ objetos, capas, mostrarCuadricula = true, soloImprimi
         if (objeto.tipo === "texto") {
           return (
             <g key={objeto.id} transform={transform}>
-              <text x={0} y={metrosAPixeles(1, 1)} fontFamily="IBM Plex Mono, monospace" fontSize={metrosAPixeles(1.1, 1)} fill={objeto.color} opacity={objeto.transparencia / 100}>
+              <text x={0} y={metrosAPixeles(1, 1)} fontFamily={objeto.fontFamily || FUENTE_TEXTO_DEFECTO} fontSize={metrosAPixeles(1.1, 1)} fill={objeto.color} opacity={objeto.transparencia / 100}>
                 {objeto.contenido}
               </text>
             </g>

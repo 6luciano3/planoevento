@@ -13,6 +13,7 @@ import {
   ESTADO_EDITOR_INICIAL,
 } from "@/editor/core/EditorState";
 import { HistoryManager } from "@/editor/core/HistoryManager";
+import { FUENTE_TEXTO_DEFECTO } from "@/config/fonts";
 
 const historial = new HistoryManager<ObjetoPlano[]>(50);
 
@@ -125,6 +126,7 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
       largoM: figura.largoM,
       puntos: figura.puntos,
       contenido: figura.contenido,
+      fontFamily: figura.tipo === "texto" ? FUENTE_TEXTO_DEFECTO : undefined,
       rotacionGrados: 0,
       color: "#C2410C",
       transparencia: 100,

@@ -2,6 +2,7 @@
 
 import { useEditorStore } from "@/store/editor-store";
 import { useLayers } from "@/hooks/useLayers";
+import { FUENTES_TEXTO } from "@/config/fonts";
 
 const COLORES_PRESET = ["#16A34A", "#EA580C", "#2563EB", "#7C3AED", "#DC2626", "#475569"];
 
@@ -45,6 +46,34 @@ export function PropertiesPanel() {
           />
         </div>
       </section>
+
+      {objeto.tipo === "texto" ? (
+        <section className="properties-section">
+          <h4>Texto</h4>
+          <div className="field">
+            <label>Contenido</label>
+            <input
+              className="input"
+              value={objeto.contenido ?? ""}
+              onChange={(e) => actualizarPropiedades(objeto.id, { contenido: e.target.value })}
+            />
+          </div>
+          <div className="field">
+            <label>Tipografía</label>
+            <select
+              className="input"
+              value={objeto.fontFamily ?? FUENTES_TEXTO[0].fontFamily}
+              onChange={(e) => actualizarPropiedades(objeto.id, { fontFamily: e.target.value })}
+            >
+              {FUENTES_TEXTO.map((f) => (
+                <option key={f.id} value={f.fontFamily} style={{ fontFamily: f.fontFamily }}>
+                  {f.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
+        </section>
+      ) : null}
 
       <section className="properties-section">
         <h4>Posición y dimensiones</h4>

@@ -21,6 +21,8 @@ export interface ObjetoPlano {
   mostrarMedidas: boolean;
   /** Contenido para objetos de tipo texto. */
   contenido?: string;
+  /** Familia tipográfica para objetos de tipo texto — ver FUENTES_TEXTO en config/fonts.ts. */
+  fontFamily?: string;
   /** Vértices de línea/polilínea/polígono/cota, relativos a `posicion` (el primero siempre es {0,0}). */
   puntos?: Punto[];
 }
