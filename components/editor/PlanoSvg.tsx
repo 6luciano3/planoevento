@@ -5,6 +5,8 @@ import type { CapaPlano } from "@/types/layer";
 import { metrosAPixeles } from "@/editor/geometry/scale";
 import { obtenerSimbolo } from "@/symbols/symbol-catalog";
 import { IconoObjeto } from "./IconoObjeto";
+import { ZonasCapas } from "./ZonasCapas";
+import { calcularZonasPorCapa } from "@/editor/geometry/zonas";
 import { FUENTE_TEXTO_DEFECTO } from "@/config/fonts";
 
 const ANCHO_PREDIO_M = 60;
@@ -45,6 +47,7 @@ export function PlanoSvg({ objetos, capas, mostrarCuadricula = true, soloImprimi
       ) : null}
       <rect width={anchoPx} height={altoPx} fill={mostrarCuadricula ? "url(#grid-print)" : "transparent"} />
       <rect x={4} y={4} width={anchoPx - 8} height={altoPx - 8} fill="none" stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="6 5" />
+      <ZonasCapas zonas={calcularZonasPorCapa(objetos, capas)} zoom={1} />
 
       {objetos.map((objeto) => {
         if (!objeto.visible || !capaVisible(objeto.capaId)) return null;

@@ -10,6 +10,7 @@
   --line: #E2E8F0;
   --line-strong: #CBD5E1;
   --grid: rgba(15,23,42,0.05);
+  --plano-fondo: #EEF6EC;
   --accent: #16A34A;
   --accent-soft: #DCFCE7;
   --accent-ink: #15803D;
@@ -33,6 +34,7 @@
     --ink: #F1F5F9; --ink-soft: #A9B7CC; --ink-faint: #74839C;
     --line: rgba(241,245,249,0.12); --line-strong: rgba(241,245,249,0.22);
     --grid: rgba(241,245,249,0.05);
+    --plano-fondo: #10241a;
     --accent: #22C55E; --accent-soft: rgba(34,197,94,0.16); --accent-ink: #86EFAC;
     --info: #60A5FA; --info-soft: rgba(96,165,250,0.16);
     --good: #22C55E; --good-soft: rgba(34,197,94,0.16);
@@ -285,7 +287,7 @@ legend { font-family: "Inter", sans-serif; font-weight: 700; font-size: 14px; pa
 .symbol-item-label { font-size: 11px; text-align: center; line-height: 1.25; color: var(--ink-soft); }
 .symbol-empty { grid-column: 1 / -1; font-size: 13px; color: var(--ink-faint); text-align: center; padding: 20px 0; }
 
-.editor-canvas { position: relative; overflow: auto; background: var(--paper-alt); display: flex; align-items: flex-start; justify-content: flex-start; padding: 24px; touch-action: none; }
+.editor-canvas { position: relative; overflow: auto; background: var(--plano-fondo); display: flex; align-items: flex-start; justify-content: flex-start; padding: 24px; touch-action: none; }
 .editor-canvas-empty { padding: 60px; color: var(--ink-faint); }
 .editor-canvas-hint {
   position: absolute; top: 10px; left: 10px; z-index: 2;

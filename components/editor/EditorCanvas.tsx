@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect, type PointerEvent as ReactPointerEvent, type MouseEvent as ReactMouseEvent } from "react";
+import { useRef, useState, useCallback, useEffect, useMemo, type PointerEvent as ReactPointerEvent, type MouseEvent as ReactMouseEvent } from "react";
 import { useEditorStore } from "@/store/editor-store";
 import { useDragAndDrop } from "@/hooks/useDragAndDrop";
 import { metrosAPixeles, pixelesAMetros } from "@/editor/geometry/scale";
@@ -8,6 +8,8 @@ import { distanciaEntrePuntos } from "@/editor/geometry/coordinates";
 import { aplicarGridSnap } from "@/editor/snapping/GridSnap";
 import { obtenerSimbolo } from "@/symbols/symbol-catalog";
 import { IconoObjeto } from "./IconoObjeto";
+import { ZonasCapas } from "./ZonasCapas";
+import { calcularZonasPorCapa } from "@/editor/geometry/zonas";
 import { FUENTE_TEXTO_DEFECTO } from "@/config/fonts";
 import type { Punto } from "@/types/location";
 import type { HerramientaEditor } from "@/types/editor";
@@ -60,6 +62,8 @@ export function EditorCanvas() {
   const moverObjeto = useEditorStore((s) => s.moverObjeto);
   const herramienta = useEditorStore((s) => s.herramienta);
   const agregarFigura = useEditorStore((s) => s.agregarFigura);
+
+  const zonas = useMemo(() => (proyecto ? calcularZonasPorCapa(proyecto.objetos, proyecto.capas) : []), [proyecto]);
 
   const [arrastrandoId, setArrastrandoId] = useState<string | null>(null);
   const offsetRef = useRef({ dxM: 0, dyM: 0 });
@@ -297,6 +301,7 @@ export function EditorCanvas() {
         ) : null}
         <rect width={anchoPx} height={altoPx} fill={mostrarCuadricula ? "url(#grid)" : "transparent"} />
         <rect x={4} y={4} width={anchoPx - 8} height={altoPx - 8} fill="none" stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="6 5" />
+        <ZonasCapas zonas={zonas} zoom={zoom} />
 
         {proyecto.objetos.map((objeto) => {
           if (!capaVisible(objeto.capaId)) return null;
