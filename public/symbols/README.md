@@ -5,32 +5,51 @@ distribución espacial sobre el lienzo — ver PRD, sección "2. Elementos
 colocados sobre el plano".
 
 ## Estado actual
-Símbolos ya dibujados — la demo inicial más los que más se usan en una
-feria real (stands, gastronomía, sanitarios separados por género,
-estacionamiento, generador, ambulancia):
+Símbolos ya dibujados a mano — la demo inicial:
 
-- `stands/stand-simple.svg`, `stands/escenario.svg`, `stands/carpa.svg`
+- `stands/stand-simple.svg`, `stands/escenario.svg`
 - `accesos/entrada.svg`, `accesos/salida.svg`, `accesos/salida-emergencia.svg`
-- `sanitarios/bano-accesible.svg`, `sanitarios/bano-hombres.svg`, `sanitarios/bano-mujeres.svg`
-- `emergencias/primeros-auxilios.svg`, `emergencias/extintor.svg`, `emergencias/ambulancia.svg`, `emergencias/punto-encuentro.svg`
-- `residuos/tacho-basura.svg`, `residuos/contenedor.svg`
-- `gastronomia/puesto-gastronomico.svg`, `gastronomia/food-truck.svg`
-- `estacionamiento/automovil.svg`
-- `electricidad/generador.svg`
-- `agua-gas/punto-agua.svg`
-- `vegetacion/arbol-mediano.svg`
+- `emergencias/punto-encuentro.svg`
+- `residuos/contenedor.svg`
 - `senalizacion/flecha-norte.svg`
 
-Además, 14 pictogramas tomados de SVG Repo (svgrepo.com), recoloreados donde
+Además, 6 pictogramas tomados de SVG Repo (svgrepo.com), recoloreados donde
 hacía falta para que se vean bien también en modo oscuro:
 
-- `sanitarios/bano-inclusivo.svg`, `sanitarios/bano-quimico.svg`
+- `sanitarios/bano-quimico.svg`
 - `estacionamiento/accesible.svg`
 - `senalizacion/accesibilidad.svg`
-- `emergencias/puesto-seguridad.svg`, `emergencias/ruta-evacuacion.svg`
-- `infraestructura/punto-informacion.svg`
-- `gastronomia/cocina.svg`, `gastronomia/area-mesas.svg`
-- `vegetacion/arbol-grande.svg`, `vegetacion/arbol-pequeno.svg`, `vegetacion/arbusto.svg`, `vegetacion/palmera.svg`, `vegetacion/planta.svg`
+- `emergencias/ruta-evacuacion.svg`
+- `gastronomia/cocina.svg`
+
+Y 29 íconos del set `fluent-emoji` de Iconify (Microsoft, licencia MIT,
+`api.iconify.design`) — estilo glossy/a color que se acerca más a la
+referencia visual del producto que el pictograma técnico de línea fina:
+
+- `vegetacion/arbol-grande.svg`, `arbol-pequeno.svg` ← `deciduous-tree`
+- `vegetacion/arbol-mediano.svg` ← `evergreen-tree`
+- `vegetacion/palmera.svg` ← `palm-tree`
+- `vegetacion/arbusto.svg`, `planta.svg`, `cantero.svg` ← `potted-plant`
+- `estacionamiento/automovil.svg` ← `automobile`
+- `estacionamiento/motocicleta.svg` ← `motor-scooter`
+- `estacionamiento/bicicleta.svg` ← `bicycle`
+- `stands/carpa.svg`, `infraestructura/gazebo.svg` ← `tent`
+- `sanitarios/bano-hombres.svg` ← `mens-room`
+- `sanitarios/bano-mujeres.svg` ← `womens-room`
+- `sanitarios/bano-accesible.svg`, `bano-inclusivo.svg` ← `restroom`
+- `gastronomia/area-mesas.svg` ← `fork-and-knife-with-plate`
+- `gastronomia/puesto-gastronomico.svg` ← `hamburger`
+- `gastronomia/food-truck.svg` ← `delivery-truck`
+- `emergencias/extintor.svg` ← `fire-extinguisher`
+- `emergencias/ambulancia.svg` ← `ambulance`
+- `emergencias/primeros-auxilios.svg` ← `adhesive-bandage`
+- `infraestructura/punto-informacion.svg` ← `information`
+- `emergencias/puesto-seguridad.svg` ← `shield`
+- `residuos/tacho-basura.svg` ← `wastebasket`
+- `agua-gas/punto-agua.svg` ← `droplet`
+- `electricidad/generador.svg` ← `electric-plug`
+- `infraestructura/torre-sonido.svg` ← `loudspeaker`
+- `infraestructura/pantalla.svg` ← `television`
 
 Todos los demás componentes del catálogo (`symbols/categories/*.ts`) ya
 tienen su `id`, categoría y ruta de ícono definidos — faltan sus archivos
