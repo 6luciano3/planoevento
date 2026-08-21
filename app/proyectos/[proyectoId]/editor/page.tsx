@@ -1,17 +1,17 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import type { DragEvent } from "react";
 import { useEditor } from "@/hooks/useEditor";
 import { useAutosave } from "@/hooks/useAutosave";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
-import { useDragAndDrop } from "@/hooks/useDragAndDrop";
+import { useDragStore } from "@/store/drag-store";
 import { EditorToolbar } from "@/components/editor/EditorToolbar";
 import { SymbolLibrary } from "@/components/editor/SymbolLibrary";
 import { EditorCanvas } from "@/components/editor/EditorCanvas";
 import { PropertiesPanel } from "@/components/editor/PropertiesPanel";
 import { LayersPanel } from "@/components/editor/LayersPanel";
-import { useRef, useState } from "react";
+import { DragGhost } from "@/components/editor/DragGhost";
+import { useEffect, useState } from "react";
 
 type PanelMovil = "biblioteca" | "propiedades" | null;
 
@@ -23,10 +23,12 @@ export default function EditorPrincipalPage() {
   useKeyboardShortcuts();
   const [panelMovil, setPanelMovil] = useState<PanelMovil>(null);
 
-  // El propio lienzo administra su drop-zone; acá solo necesitamos el
-  // iniciador de arrastre para conectarlo con la biblioteca lateral.
-  const lienzoRefDummy = useRef<HTMLDivElement>(null);
-  const { iniciarArrastre } = useDragAndDrop(lienzoRefDummy);
+  // Al empezar a arrastrar un símbolo (mouse o touch) se cierra el panel
+  // móvil de la biblioteca para que se vea el lienzo por debajo.
+  const arrastrando = useDragStore((s) => s.simboloId);
+  useEffect(() => {
+    if (arrastrando) setPanelMovil(null);
+  }, [arrastrando]);
 
   if (!proyecto) {
     return <div className="editor-canvas-empty">Cargando plano…</div>;
@@ -47,13 +49,7 @@ export default function EditorPrincipalPage() {
         onTogglePropiedades={() => alternarPanel("propiedades")}
       />
       <div className="editor-body">
-        <SymbolLibrary
-          abierto={panelMovil === "biblioteca"}
-          onArrastrarInicio={(e: DragEvent<HTMLElement>, id: string) => {
-            iniciarArrastre(e, id);
-            setPanelMovil(null);
-          }}
-        />
+        <SymbolLibrary abierto={panelMovil === "biblioteca"} />
         <EditorCanvas />
         <div className={`editor-right-column ${panelMovil === "propiedades" ? "panel-abierto" : ""}`}>
           <PropertiesPanel />
@@ -61,6 +57,7 @@ export default function EditorPrincipalPage() {
         </div>
         {panelMovil ? <div className="editor-panel-backdrop" onClick={() => setPanelMovil(null)} /> : null}
       </div>
+      <DragGhost />
     </div>
   );
 }

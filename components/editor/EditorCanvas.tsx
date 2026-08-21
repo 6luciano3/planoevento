@@ -2,7 +2,6 @@
 
 import { useRef, useState, useCallback, useEffect, useMemo, type PointerEvent as ReactPointerEvent, type MouseEvent as ReactMouseEvent } from "react";
 import { useEditorStore } from "@/store/editor-store";
-import { useDragAndDrop } from "@/hooks/useDragAndDrop";
 import { metrosAPixeles, pixelesAMetros } from "@/editor/geometry/scale";
 import { distanciaEntrePuntos } from "@/editor/geometry/coordinates";
 import { aplicarGridSnap } from "@/editor/snapping/GridSnap";
@@ -51,7 +50,6 @@ function textoAyuda(herramienta: HerramientaEditor, hayLineaIniciada: boolean): 
  */
 export function EditorCanvas() {
   const lienzoRef = useRef<HTMLDivElement>(null);
-  const { permitirSoltar, soltar } = useDragAndDrop(lienzoRef);
 
   const proyecto = useEditorStore((s) => s.proyecto);
   const zoom = useEditorStore((s) => s.zoom);
@@ -280,8 +278,6 @@ export function EditorCanvas() {
       ref={lienzoRef}
       className="editor-canvas"
       style={cursor ? { cursor } : undefined}
-      onDragOver={permitirSoltar}
-      onDrop={soltar}
       onPointerDown={alPresionarLienzo}
       onPointerMove={alMoverPuntero}
       onPointerUp={alSoltarPuntero}

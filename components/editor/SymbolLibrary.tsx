@@ -1,14 +1,14 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useMemo, useState, type DragEvent } from "react";
+import { useMemo, useState } from "react";
 import { buscarSimbolos, SYMBOL_CATALOG } from "@/symbols/symbol-catalog";
 import { CATEGORIAS } from "@/symbols/symbol-types";
 import { useSymbolStore } from "@/store/symbol-store";
+import { useDragAndDrop } from "@/hooks/useDragAndDrop";
 import type { CategoriaSimbolo } from "@/types/symbol";
 
 interface SymbolLibraryProps {
-  onArrastrarInicio: (event: DragEvent<HTMLElement>, simboloId: string) => void;
   /** En pantallas chicas, la biblioteca es un panel deslizable — true cuando está abierto. */
   abierto?: boolean;
 }
@@ -22,12 +22,13 @@ interface SymbolLibraryProps {
 function SymbolSwatch({ src, alt }: { src: string; alt: string }) {
   const [error, setError] = useState(false);
   if (error) return <span className="symbol-item-swatch" aria-hidden="true" />;
-  return <img className="symbol-item-swatch" src={src} alt={alt} onError={() => setError(true)} />;
+  return <img className="symbol-item-swatch" src={src} alt={alt} draggable={false} onError={() => setError(true)} />;
 }
 
 /** Paleta izquierda del editor — Pantalla 17 "Biblioteca de elementos" (HU-ORG-19/20/21). */
-export function SymbolLibrary({ onArrastrarInicio, abierto = false }: SymbolLibraryProps) {
+export function SymbolLibrary({ abierto = false }: SymbolLibraryProps) {
   const { busqueda, categoriaActiva, setBusqueda, setCategoria, registrarUso } = useSymbolStore();
+  const { iniciarArrastre } = useDragAndDrop();
 
   const resultados = useMemo(() => {
     if (busqueda.trim()) return buscarSimbolos(busqueda);
@@ -69,9 +70,9 @@ export function SymbolLibrary({ onArrastrarInicio, abierto = false }: SymbolLibr
           <button
             key={simbolo.id}
             className="symbol-item"
-            draggable
-            onDragStart={(e) => {
-              onArrastrarInicio(e, simbolo.id);
+            type="button"
+            onPointerDown={(e) => {
+              iniciarArrastre(e, simbolo.id);
               registrarUso(simbolo.id);
             }}
             title={`${simbolo.nombre} · ${simbolo.defaultWidth}×${simbolo.defaultHeight} m`}
