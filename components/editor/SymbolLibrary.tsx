@@ -9,6 +9,8 @@ import type { CategoriaSimbolo } from "@/types/symbol";
 
 interface SymbolLibraryProps {
   onArrastrarInicio: (event: DragEvent<HTMLElement>, simboloId: string) => void;
+  /** En pantallas chicas, la biblioteca es un panel deslizable — true cuando está abierto. */
+  abierto?: boolean;
 }
 
 /**
@@ -24,7 +26,7 @@ function SymbolSwatch({ src, alt }: { src: string; alt: string }) {
 }
 
 /** Paleta izquierda del editor — Pantalla 17 "Biblioteca de elementos" (HU-ORG-19/20/21). */
-export function SymbolLibrary({ onArrastrarInicio }: SymbolLibraryProps) {
+export function SymbolLibrary({ onArrastrarInicio, abierto = false }: SymbolLibraryProps) {
   const { busqueda, categoriaActiva, setBusqueda, setCategoria, registrarUso } = useSymbolStore();
 
   const resultados = useMemo(() => {
@@ -34,15 +36,17 @@ export function SymbolLibrary({ onArrastrarInicio }: SymbolLibraryProps) {
   }, [busqueda, categoriaActiva]);
 
   return (
-    <aside className="symbol-library">
+    <aside className={`symbol-library ${abierto ? "panel-abierto" : ""}`}>
       <div className="symbol-search">
-        <Search size={15} />
-        <input
-          type="search"
-          placeholder="Buscar componente…"
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-        />
+        <div className="symbol-search-box">
+          <Search size={15} />
+          <input
+            type="search"
+            placeholder="Buscar componente…"
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+          />
+        </div>
       </div>
 
       <div className="symbol-categories">

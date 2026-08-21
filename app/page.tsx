@@ -24,7 +24,7 @@ export default function LandingPage() {
           </nav>
 
           <div className="nav-actions">
-            <Link className="link-btn" href="/auth/iniciar-sesion">
+            <Link className="link-btn nav-actions-secondary" href="/auth/iniciar-sesion">
               Iniciar sesión
             </Link>
             <Link className="btn btn-solid" href="/proyectos/nuevo">
@@ -262,6 +262,12 @@ const LANDING_CSS = `
 .primary-nav a:hover { color: var(--ink); }
 .nav-actions { display: flex; align-items: center; gap: 10px; }
 @media (max-width: 860px) { .primary-nav { display: none; } }
+@media (max-width: 480px) {
+  .nav-row { gap: 12px; padding: 0 16px; }
+  .brand span { display: none; }
+  .nav-actions-secondary { display: none; }
+  .nav-actions .btn { padding: 9px 14px; font-size: 13.5px; }
+}
 
 .hero-section { padding: clamp(48px,8vw,88px) 0; }
 .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(32px,5vw,64px); align-items: center; max-width: 1180px; margin: 0 auto; padding: 0 clamp(20px,5vw,56px); }

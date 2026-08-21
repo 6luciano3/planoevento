@@ -16,6 +16,15 @@ import { HistoryManager } from "@/editor/core/HistoryManager";
 
 const historial = new HistoryManager<ObjetoPlano[]>(50);
 
+/**
+ * Si la capa activa está oculta, un objeto nuevo se crea igual pero no se ve
+ * en el lienzo — quedaba como si la herramienta "no hiciera nada". Se
+ * muestra la capa automáticamente al agregar algo en ella.
+ */
+function conCapaVisible(capas: ProyectoPlano["capas"], capaId: string): ProyectoPlano["capas"] {
+  return capas.map((c) => (c.id === capaId && !c.visible ? { ...c, visible: true } : c));
+}
+
 interface EditorStoreState extends EstadoEditor {
   proyecto: ProyectoPlano | null;
   capaActivaId: string | null;
@@ -87,7 +96,7 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
 
     historial.registrar(proyecto.objetos);
     const objetos = agregarObjeto(proyecto.objetos, nuevo);
-    const actualizado = { ...proyecto, objetos };
+    const actualizado = { ...proyecto, objetos, capas: conCapaVisible(proyecto.capas, capaActivaId) };
     set({ proyecto: actualizado, seleccionId: nuevo.id });
     projectService.guardarProyecto(actualizado);
   },
@@ -128,7 +137,7 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
 
     historial.registrar(proyecto.objetos);
     const objetos = agregarObjeto(proyecto.objetos, nuevo);
-    const actualizado = { ...proyecto, objetos };
+    const actualizado = { ...proyecto, objetos, capas: conCapaVisible(proyecto.capas, capaActivaId) };
     set({ proyecto: actualizado, seleccionId: id, herramienta: "seleccionar" });
     projectService.guardarProyecto(actualizado);
     return id;
@@ -159,7 +168,7 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     }
 
     const objetos = [...proyecto.objetos, ...nuevos];
-    const actualizado = { ...proyecto, objetos };
+    const actualizado = { ...proyecto, objetos, capas: conCapaVisible(proyecto.capas, capaActivaId) };
     set({ proyecto: actualizado });
     projectService.guardarProyecto(actualizado);
     return nuevos.length;

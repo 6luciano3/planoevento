@@ -23,6 +23,8 @@ import {
   Type,
   Ruler,
   LayoutGrid,
+  Library,
+  SlidersHorizontal,
 } from "lucide-react";
 import { useEditorStore } from "@/store/editor-store";
 import { EDITOR_CONFIG } from "@/config/editor.config";
@@ -35,6 +37,9 @@ interface EditorToolbarProps {
   proyectoId: string;
   proyectoNombre: string;
   estadoGuardado: EstadoGuardado;
+  panelMovil?: "biblioteca" | "propiedades" | null;
+  onToggleBiblioteca?: () => void;
+  onTogglePropiedades?: () => void;
 }
 
 const ETIQUETA_GUARDADO: Record<EstadoGuardado, string> = {
@@ -56,7 +61,7 @@ const ICONO_HERRAMIENTA: Record<HerramientaEditor, typeof MousePointer2> = {
 };
 
 /** Barra superior del editor — Pantalla 15, sección "Barra superior" del PRD. */
-export function EditorToolbar({ proyectoId, proyectoNombre, estadoGuardado }: EditorToolbarProps) {
+export function EditorToolbar({ proyectoId, proyectoNombre, estadoGuardado, panelMovil, onToggleBiblioteca, onTogglePropiedades }: EditorToolbarProps) {
   const zoom = useEditorStore((s) => s.zoom);
   const setZoom = useEditorStore((s) => s.setZoom);
   const mostrarCuadricula = useEditorStore((s) => s.mostrarCuadricula);
@@ -80,25 +85,33 @@ export function EditorToolbar({ proyectoId, proyectoNombre, estadoGuardado }: Ed
         </div>
 
         <div className="editor-toolbar-right">
-          <Link className="link-btn" href={`/proyectos/${proyectoId}/ubicacion`}>
-            <MapPin size={16} /> Ubicación
+          <Link className="link-btn" href={`/proyectos/${proyectoId}/ubicacion`} title="Ubicación">
+            <MapPin size={16} /> <span className="editor-toolbar-link-label">Ubicación</span>
           </Link>
-          <Link className="link-btn" href={`/proyectos/${proyectoId}/rotulo`}>
-            <FileText size={16} /> Rótulo
+          <Link className="link-btn" href={`/proyectos/${proyectoId}/rotulo`} title="Rótulo">
+            <FileText size={16} /> <span className="editor-toolbar-link-label">Rótulo</span>
           </Link>
-          <Link className="link-btn" href={`/proyectos/${proyectoId}/leyenda`}>
-            <List size={16} /> Leyenda
+          <Link className="link-btn" href={`/proyectos/${proyectoId}/leyenda`} title="Leyenda">
+            <List size={16} /> <span className="editor-toolbar-link-label">Leyenda</span>
           </Link>
-          <Link className="link-btn" href={`/proyectos/${proyectoId}/revision`}>
-            <Eye size={16} /> Revisar plano
+          <Link className="link-btn" href={`/proyectos/${proyectoId}/revision`} title="Revisar plano">
+            <Eye size={16} /> <span className="editor-toolbar-link-label">Revisar plano</span>
           </Link>
-          <Link className="btn btn-solid" href={`/proyectos/${proyectoId}/exportar`}>
-            <FileDown size={16} /> Exportar PDF
+          <Link className="btn btn-solid" href={`/proyectos/${proyectoId}/exportar`} title="Exportar PDF">
+            <FileDown size={16} /> <span className="editor-toolbar-link-label">Exportar PDF</span>
           </Link>
         </div>
       </div>
 
       <div className="editor-tools-bar">
+        <button
+          className={`icon-btn editor-mobile-toggle ${panelMovil === "biblioteca" ? "icon-btn-active" : ""}`}
+          onClick={onToggleBiblioteca}
+          title="Biblioteca de componentes"
+        >
+          <Library size={17} />
+        </button>
+
         <div className="editor-tools-group">
           {HERRAMIENTAS.map((h) => {
             const Icono = ICONO_HERRAMIENTA[h.id];
@@ -139,6 +152,14 @@ export function EditorToolbar({ proyectoId, proyectoNombre, estadoGuardado }: Ed
         <span className="zoom-value mono">{Math.round(zoom * 100)}%</span>
         <button className="icon-btn" onClick={() => setZoom(Math.min(EDITOR_CONFIG.zoomMax, zoom + EDITOR_CONFIG.zoomStep))} title="Acercar">
           <ZoomIn size={17} />
+        </button>
+
+        <button
+          className={`icon-btn editor-mobile-toggle ${panelMovil === "propiedades" ? "icon-btn-active" : ""}`}
+          onClick={onTogglePropiedades}
+          title="Propiedades y capas"
+        >
+          <SlidersHorizontal size={17} />
         </button>
       </div>
 

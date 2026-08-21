@@ -11,7 +11,9 @@ import { SymbolLibrary } from "@/components/editor/SymbolLibrary";
 import { EditorCanvas } from "@/components/editor/EditorCanvas";
 import { PropertiesPanel } from "@/components/editor/PropertiesPanel";
 import { LayersPanel } from "@/components/editor/LayersPanel";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+
+type PanelMovil = "biblioteca" | "propiedades" | null;
 
 /** Pantalla 15 — Editor principal. Ensambla toolbar, biblioteca, lienzo, propiedades y capas. */
 export default function EditorPrincipalPage() {
@@ -19,6 +21,7 @@ export default function EditorPrincipalPage() {
   const { proyecto } = useEditor(proyectoId);
   const estadoGuardado = useAutosave();
   useKeyboardShortcuts();
+  const [panelMovil, setPanelMovil] = useState<PanelMovil>(null);
 
   // El propio lienzo administra su drop-zone; acá solo necesitamos el
   // iniciador de arrastre para conectarlo con la biblioteca lateral.
@@ -29,16 +32,34 @@ export default function EditorPrincipalPage() {
     return <div className="editor-canvas-empty">Cargando plano…</div>;
   }
 
+  function alternarPanel(panel: Exclude<PanelMovil, null>) {
+    setPanelMovil((actual) => (actual === panel ? null : panel));
+  }
+
   return (
     <div className="editor-shell">
-      <EditorToolbar proyectoId={proyectoId} proyectoNombre={proyecto.evento.nombre || proyecto.nombre} estadoGuardado={estadoGuardado} />
+      <EditorToolbar
+        proyectoId={proyectoId}
+        proyectoNombre={proyecto.evento.nombre || proyecto.nombre}
+        estadoGuardado={estadoGuardado}
+        panelMovil={panelMovil}
+        onToggleBiblioteca={() => alternarPanel("biblioteca")}
+        onTogglePropiedades={() => alternarPanel("propiedades")}
+      />
       <div className="editor-body">
-        <SymbolLibrary onArrastrarInicio={(e: DragEvent<HTMLElement>, id: string) => iniciarArrastre(e, id)} />
+        <SymbolLibrary
+          abierto={panelMovil === "biblioteca"}
+          onArrastrarInicio={(e: DragEvent<HTMLElement>, id: string) => {
+            iniciarArrastre(e, id);
+            setPanelMovil(null);
+          }}
+        />
         <EditorCanvas />
-        <div className="editor-right-column">
+        <div className={`editor-right-column ${panelMovil === "propiedades" ? "panel-abierto" : ""}`}>
           <PropertiesPanel />
           <LayersPanel />
         </div>
+        {panelMovil ? <div className="editor-panel-backdrop" onClick={() => setPanelMovil(null)} /> : null}
       </div>
     </div>
   );
