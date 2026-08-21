@@ -21,6 +21,17 @@ estacionamiento, generador, ambulancia):
 - `vegetacion/arbol-mediano.svg`
 - `senalizacion/flecha-norte.svg`
 
+Además, 14 pictogramas tomados de SVG Repo (svgrepo.com), recoloreados donde
+hacía falta para que se vean bien también en modo oscuro:
+
+- `sanitarios/bano-inclusivo.svg`, `sanitarios/bano-quimico.svg`
+- `estacionamiento/accesible.svg`
+- `senalizacion/accesibilidad.svg`
+- `emergencias/puesto-seguridad.svg`, `emergencias/ruta-evacuacion.svg`
+- `infraestructura/punto-informacion.svg`
+- `gastronomia/cocina.svg`, `gastronomia/area-mesas.svg`
+- `vegetacion/arbol-grande.svg`, `vegetacion/arbol-pequeno.svg`, `vegetacion/arbusto.svg`, `vegetacion/palmera.svg`, `vegetacion/planta.svg`
+
 Todos los demás componentes del catálogo (`symbols/categories/*.ts`) ya
 tienen su `id`, categoría y ruta de ícono definidos — faltan sus archivos
 `.svg`. `EditorCanvas.tsx` no depende de que el SVG exista: mientras no se
