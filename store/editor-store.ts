@@ -27,6 +27,14 @@ interface EditorStoreState extends EstadoEditor {
   setCapaActiva: (id: string) => void;
   seleccionar: (id: string | null) => void;
   soltarSimbolo: (simboloId: string, posicion: Punto) => void;
+  agregarFigura: (figura: {
+    tipo: "linea" | "polilinea" | "rectangulo" | "circulo" | "poligono" | "texto";
+    posicion: Punto;
+    anchoM: number;
+    largoM: number;
+    puntos?: Punto[];
+    contenido?: string;
+  }) => string | null;
   distribuirSimbolo: (
     simboloId: string,
     origen: Punto,
@@ -82,6 +90,48 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     const actualizado = { ...proyecto, objetos };
     set({ proyecto: actualizado, seleccionId: nuevo.id });
     projectService.guardarProyecto(actualizado);
+  },
+
+  /** Crea una figura dibujada a mano (línea, polilínea, rectángulo, círculo, polígono o texto) — HU-ORG-15. */
+  agregarFigura: (figura) => {
+    const { proyecto, capaActivaId } = get();
+    if (!proyecto || !capaActivaId) return null;
+
+    const NOMBRE_POR_TIPO: Record<string, string> = {
+      linea: "Línea",
+      polilinea: "Polilínea",
+      rectangulo: "Rectángulo",
+      circulo: "Círculo",
+      poligono: "Polígono",
+      texto: "Texto",
+    };
+    const id = `obj-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+    const nuevo: ObjetoPlano = {
+      id,
+      tipo: figura.tipo,
+      nombreVisible: NOMBRE_POR_TIPO[figura.tipo] ?? "Elemento",
+      capaId: capaActivaId,
+      posicion: figura.posicion,
+      anchoM: figura.anchoM,
+      largoM: figura.largoM,
+      puntos: figura.puntos,
+      contenido: figura.contenido,
+      rotacionGrados: 0,
+      color: "#1C2430",
+      transparencia: 100,
+      ordenVisual: proyecto.objetos.length + 1,
+      visible: true,
+      bloqueado: false,
+      mostrarNombre: false,
+      mostrarMedidas: false,
+    };
+
+    historial.registrar(proyecto.objetos);
+    const objetos = agregarObjeto(proyecto.objetos, nuevo);
+    const actualizado = { ...proyecto, objetos };
+    set({ proyecto: actualizado, seleccionId: id, herramienta: "seleccionar" });
+    projectService.guardarProyecto(actualizado);
+    return id;
   },
 
   /** Crea varios objetos en fila/cuadrícula de una sola vez — Pantalla de "Distribuir y numerar" (HU-ORG-28/29). */

@@ -4,7 +4,7 @@ import type { Punto } from "./location";
 export interface ObjetoPlano {
   id: string;
   simboloId?: string;
-  tipo: "simbolo" | "linea" | "rectangulo" | "circulo" | "poligono" | "texto" | "cota";
+  tipo: "simbolo" | "linea" | "polilinea" | "rectangulo" | "circulo" | "poligono" | "texto" | "cota";
   codigo?: string;
   nombreVisible: string;
   capaId: string;
@@ -21,6 +21,8 @@ export interface ObjetoPlano {
   mostrarMedidas: boolean;
   /** Contenido para objetos de tipo texto. */
   contenido?: string;
+  /** Vértices de línea/polilínea/polígono/cota, relativos a `posicion` (el primero siempre es {0,0}). */
+  puntos?: Punto[];
 }
 
 export type HerramientaEditor =
