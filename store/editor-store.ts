@@ -117,7 +117,7 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
       puntos: figura.puntos,
       contenido: figura.contenido,
       rotacionGrados: 0,
-      color: "#1C2430",
+      color: "#C2410C",
       transparencia: 100,
       ordenVisual: proyecto.objetos.length + 1,
       visible: true,
