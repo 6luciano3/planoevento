@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/layout/AppHeader";
+import { PlanoSvg } from "@/components/editor/PlanoSvg";
 import { obtenerProyecto, guardarProyecto } from "@/services/project.service";
 import { generarLeyenda } from "@/services/plan.service";
 import { exportarComoPdf } from "@/services/pdf.service";
@@ -71,19 +72,13 @@ export default function ExportarPage() {
             </header>
           ) : null}
 
-          <div
-            className="editor-canvas-empty"
-            style={{
-              border: "1px dashed var(--line-strong)",
-              textAlign: "center",
-              padding: 40,
-              backgroundImage: proyecto.plano.hoja.mostrarCuadricula
-                ? "linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px)"
-                : "none",
-              backgroundSize: "24px 24px",
-            }}
-          >
-            [ Plano general — {proyecto.objetos.length} elementos colocados ]
+          <div style={{ overflowX: "auto", border: "1px solid var(--line)" }}>
+            <PlanoSvg
+              objetos={proyecto.objetos}
+              capas={proyecto.capas}
+              mostrarCuadricula={proyecto.plano.hoja.mostrarCuadricula}
+              soloImprimibles
+            />
           </div>
 
           {incluirLeyenda ? (

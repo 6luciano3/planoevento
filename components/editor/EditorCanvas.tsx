@@ -7,6 +7,7 @@ import { metrosAPixeles, pixelesAMetros } from "@/editor/geometry/scale";
 import { distanciaEntrePuntos } from "@/editor/geometry/coordinates";
 import { aplicarGridSnap } from "@/editor/snapping/GridSnap";
 import { obtenerSimbolo } from "@/symbols/symbol-catalog";
+import { IconoObjeto } from "./IconoObjeto";
 import type { Punto } from "@/types/location";
 import type { HerramientaEditor } from "@/types/editor";
 
@@ -16,36 +17,6 @@ const HERRAMIENTAS_ARRASTRE: HerramientaEditor[] = ["rectangulo", "circulo", "me
 
 type DibujoArrastre = { tipo: "rectangulo" | "circulo"; inicio: Punto; actual: Punto };
 type Medicion = { inicio: Punto; actual: Punto };
-
-/**
- * No todos los ~90 componentes del catálogo tienen su SVG dibujado todavía
- * (ver public/symbols/README.md). Si el archivo no existe, mostrar el
- * ícono roto del navegador se ve peor que el rectángulo de color con el
- * código — así que se cae a eso ante un error de carga.
- */
-function IconoObjeto({ src, width, height, opacity, color, seleccionado }: {
-  src: string;
-  width: number;
-  height: number;
-  opacity: number;
-  color: string;
-  seleccionado: boolean;
-}) {
-  const [error, setError] = useState(false);
-  if (error) {
-    return (
-      <rect
-        width={width}
-        height={height}
-        fill={color}
-        fillOpacity={opacity * 0.22}
-        stroke={color}
-        strokeWidth={seleccionado ? 2 : 1.2}
-      />
-    );
-  }
-  return <image href={src} width={width} height={height} opacity={opacity} onError={() => setError(true)} />;
-}
 
 function textoAyuda(herramienta: HerramientaEditor, hayLineaIniciada: boolean): string | null {
   switch (herramienta) {
