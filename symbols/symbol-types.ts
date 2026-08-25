@@ -18,4 +18,6 @@ export const CATEGORIAS: DefinicionCategoria[] = [
   { id: "agua-gas", nombre: "Agua y gas" },
   { id: "senalizacion", nombre: "Señalización" },
   { id: "vegetacion", nombre: "Vegetación" },
+  { id: "mobiliario-urbano", nombre: "Mobiliario urbano" },
+  { id: "personas", nombre: "Personas y flujo" },
 ];

@@ -3,8 +3,11 @@
 import { useCallback, useEffect, type PointerEvent as ReactPointerEvent } from "react";
 import { useDragStore } from "@/store/drag-store";
 import { useEditorStore } from "@/store/editor-store";
-import { pixelesAMetros } from "@/editor/geometry/scale";
+import { isometricoAMetros } from "@/editor/geometry/isometric";
 import { aplicarGridSnap } from "@/editor/snapping/GridSnap";
+
+const ANCHO_PREDIO_M = 60;
+const ALTO_PREDIO_M = 40;
 
 /**
  * Arrastrar un símbolo de la biblioteca y soltarlo en el lienzo — HU-ORG-21,
@@ -70,9 +73,9 @@ function soltarEnPunto(simboloId: string, clientX: number, clientY: number) {
   if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) return;
 
   const { zoom, ajustarACuadricula, soltarSimbolo } = useEditorStore.getState();
-  const puntoM = {
-    x: pixelesAMetros(clientX - rect.left + lienzo.scrollLeft, zoom),
-    y: pixelesAMetros(clientY - rect.top + lienzo.scrollTop, zoom),
-  };
+  const puntoM = isometricoAMetros(
+    { x: clientX - rect.left + lienzo.scrollLeft, y: clientY - rect.top + lienzo.scrollTop },
+    { anchoPredioM: ANCHO_PREDIO_M, altoPredioM: ALTO_PREDIO_M, zoom }
+  );
   soltarSimbolo(simboloId, aplicarGridSnap(puntoM, ajustarACuadricula));
 }

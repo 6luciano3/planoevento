@@ -2,13 +2,25 @@
 
 import { useRef, useState, useCallback, useEffect, useMemo, type PointerEvent as ReactPointerEvent, type MouseEvent as ReactMouseEvent } from "react";
 import { useEditorStore } from "@/store/editor-store";
-import { metrosAPixeles, pixelesAMetros } from "@/editor/geometry/scale";
+import { metrosAPixeles } from "@/editor/geometry/scale";
 import { distanciaEntrePuntos } from "@/editor/geometry/coordinates";
 import { aplicarGridSnap } from "@/editor/snapping/GridSnap";
 import { obtenerSimbolo } from "@/symbols/symbol-catalog";
-import { IconoObjeto } from "./IconoObjeto";
+import { IconoObjeto, IconoObjetoIsometrico } from "./IconoObjeto";
 import { ZonasCapas } from "./ZonasCapas";
 import { calcularZonasPorCapa } from "@/editor/geometry/zonas";
+import {
+  metrosAIsometrico,
+  isometricoAMetros,
+  dimensionesLienzoIsometrico,
+  compararProfundidad,
+  cajaProyectada,
+  puntosFiguraProyectada,
+  puntosProyectadosPoligono,
+  centroYEscalaSimbolo,
+  matrizLineal,
+  type ConfigIsometrica,
+} from "@/editor/geometry/isometric";
 import { FUENTE_TEXTO_DEFECTO } from "@/config/fonts";
 import type { Punto } from "@/types/location";
 import type { HerramientaEditor } from "@/types/editor";
@@ -47,13 +59,15 @@ function textoAyuda(herramienta: HerramientaEditor, hayLineaIniciada: boolean): 
  * Pantalla 15 — Editor principal. Lienzo SVG interactivo: recibe símbolos
  * arrastrados desde la biblioteca (HU-ORG-21), permite moverlos y dibujar
  * figuras básicas con las herramientas de la barra superior (HU-ORG-15/16).
+ * El predio se ve en proyección isométrica (mapa ilustrado) en vez de plano
+ * técnico — los datos siguen siendo x/y en metros, solo cambia cómo se
+ * dibujan (ver editor/geometry/isometric.ts).
  */
 export function EditorCanvas() {
   const lienzoRef = useRef<HTMLDivElement>(null);
 
   const proyecto = useEditorStore((s) => s.proyecto);
   const zoom = useEditorStore((s) => s.zoom);
-  const mostrarCuadricula = useEditorStore((s) => s.mostrarCuadricula);
   const ajustarACuadricula = useEditorStore((s) => s.ajustarACuadricula);
   const seleccionId = useEditorStore((s) => s.seleccionId);
   const seleccionar = useEditorStore((s) => s.seleccionar);
@@ -61,7 +75,13 @@ export function EditorCanvas() {
   const herramienta = useEditorStore((s) => s.herramienta);
   const agregarFigura = useEditorStore((s) => s.agregarFigura);
 
+  const config: ConfigIsometrica = useMemo(() => ({ anchoPredioM: ANCHO_PREDIO_M, altoPredioM: ALTO_PREDIO_M, zoom }), [zoom]);
+
   const zonas = useMemo(() => (proyecto ? calcularZonasPorCapa(proyecto.objetos, proyecto.capas) : []), [proyecto]);
+  const objetosOrdenados = useMemo(
+    () => (proyecto ? [...proyecto.objetos].sort(compararProfundidad) : []),
+    [proyecto]
+  );
 
   const [arrastrandoId, setArrastrandoId] = useState<string | null>(null);
   const offsetRef = useRef({ dxM: 0, dyM: 0 });
@@ -73,8 +93,7 @@ export function EditorCanvas() {
   const [poligonoPuntos, setPoligonoPuntos] = useState<Punto[] | null>(null);
   const [previewPunto, setPreviewPunto] = useState<Punto | null>(null);
 
-  const anchoPx = metrosAPixeles(ANCHO_PREDIO_M, zoom);
-  const altoPx = metrosAPixeles(ALTO_PREDIO_M, zoom);
+  const { anchoPx, altoPx } = dimensionesLienzoIsometrico(config);
 
   const capaVisible = useCallback(
     (capaId: string) => proyecto?.capas.find((c) => c.id === capaId)?.visible ?? true,
@@ -90,13 +109,13 @@ export function EditorCanvas() {
       const rect = lienzoRef.current!.getBoundingClientRect();
       const scrollLeft = lienzoRef.current!.scrollLeft;
       const scrollTop = lienzoRef.current!.scrollTop;
-      const bruto = {
-        x: pixelesAMetros(clientX - rect.left + scrollLeft, zoom),
-        y: pixelesAMetros(clientY - rect.top + scrollTop, zoom),
-      };
+      const bruto = isometricoAMetros(
+        { x: clientX - rect.left + scrollLeft, y: clientY - rect.top + scrollTop },
+        config
+      );
       return aplicarGridSnap(bruto, ajustarACuadricula);
     },
-    [zoom, ajustarACuadricula]
+    [config, ajustarACuadricula]
   );
 
   // Cancelar cualquier dibujo en curso con Escape, y limpiarlo si cambia la herramienta activa.
@@ -273,6 +292,17 @@ export function EditorCanvas() {
     herramienta === "mover" ? "grab" : herramienta === "seleccionar" ? undefined : "crosshair";
   const ayuda = textoAyuda(herramienta, lineaInicio !== null);
 
+  const esquinasPredio = puntosProyectadosPoligono(
+    [
+      { x: 0, y: 0 },
+      { x: ANCHO_PREDIO_M, y: 0 },
+      { x: ANCHO_PREDIO_M, y: ALTO_PREDIO_M },
+      { x: 0, y: ALTO_PREDIO_M },
+    ],
+    config
+  );
+  const esquinasPredioStr = esquinasPredio.map((p) => `${p.x},${p.y}`).join(" ");
+
   return (
     <div
       ref={lienzoRef}
@@ -288,28 +318,15 @@ export function EditorCanvas() {
       {ayuda ? <div className="editor-canvas-hint">{ayuda}</div> : null}
 
       <svg width={anchoPx} height={altoPx} role="img" aria-label="Plano del evento">
-        {mostrarCuadricula ? (
-          <defs>
-            <pattern id="grid" width={metrosAPixeles(1, zoom)} height={metrosAPixeles(1, zoom)} patternUnits="userSpaceOnUse">
-              <path d={`M ${metrosAPixeles(1, zoom)} 0 L 0 0 0 ${metrosAPixeles(1, zoom)}`} fill="none" stroke="var(--grid)" strokeWidth="1" />
-            </pattern>
-          </defs>
-        ) : null}
-        <rect width={anchoPx} height={altoPx} fill={mostrarCuadricula ? "url(#grid)" : "transparent"} />
-        <rect x={4} y={4} width={anchoPx - 8} height={altoPx - 8} fill="none" stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="6 5" />
-        <ZonasCapas zonas={zonas} zoom={zoom} />
+        <polygon points={esquinasPredioStr} fill="var(--iso-ground)" stroke="var(--ink)" strokeWidth={1.5} strokeDasharray="6 5" />
+        <ZonasCapas zonas={zonas} config={config} />
 
-        {proyecto.objetos.map((objeto) => {
+        {objetosOrdenados.map((objeto) => {
           if (!capaVisible(objeto.capaId)) return null;
-          const xPx = metrosAPixeles(objeto.posicion.x, zoom);
-          const yPx = metrosAPixeles(objeto.posicion.y, zoom);
-          const wPx = metrosAPixeles(objeto.anchoM, zoom);
-          const hPx = metrosAPixeles(objeto.largoM, zoom);
           const seleccionado = seleccionId === objeto.id;
           const cursorObjeto = herramienta !== "seleccionar" ? undefined : capaBloqueada(objeto.capaId) ? "not-allowed" : "grab";
 
           const comun = {
-            transform: `translate(${xPx} ${yPx}) rotate(${objeto.rotacionGrados} ${wPx / 2} ${hPx / 2})`,
             onPointerDown: (e: ReactPointerEvent<SVGGElement>) => alPresionarObjeto(e, objeto.id, objeto.posicion),
             onClick: (e: ReactMouseEvent<SVGGElement>) => {
               if (herramienta === "seleccionar") e.stopPropagation();
@@ -318,13 +335,14 @@ export function EditorCanvas() {
           };
 
           if (objeto.tipo === "linea" || objeto.tipo === "polilinea" || objeto.tipo === "poligono") {
-            const puntosPx = (objeto.puntos ?? []).map((p) => `${metrosAPixeles(p.x, zoom)},${metrosAPixeles(p.y, zoom)}`).join(" ");
+            const puntosPx = puntosFiguraProyectada(objeto, config);
+            const puntosStr = puntosPx.map((p) => `${p.x},${p.y}`).join(" ");
             const cerrado = objeto.tipo === "poligono";
             const Forma = cerrado ? "polygon" : "polyline";
             return (
               <g key={objeto.id} {...comun}>
                 <Forma
-                  points={puntosPx}
+                  points={puntosStr}
                   fill={cerrado ? objeto.color : "none"}
                   fillOpacity={cerrado ? (objeto.transparencia / 100) * 0.22 : 0}
                   stroke={objeto.color}
@@ -333,43 +351,88 @@ export function EditorCanvas() {
                   strokeLinejoin="round"
                   strokeLinecap="round"
                 />
-                {seleccionado ? <Forma points={puntosPx} fill="none" stroke="var(--accent)" strokeWidth={1} strokeDasharray="3 2" /> : null}
+                {seleccionado ? <Forma points={puntosStr} fill="none" stroke="var(--accent)" strokeWidth={1} strokeDasharray="3 2" /> : null}
               </g>
             );
           }
 
           if (objeto.tipo === "circulo") {
+            const centro = metrosAIsometrico(
+              { x: objeto.posicion.x + objeto.anchoM / 2, y: objeto.posicion.y + objeto.largoM / 2 },
+              config
+            );
+            const { a, b, c, d } = matrizLineal(zoom);
+            const rx = objeto.anchoM / 2;
+            const ry = objeto.largoM / 2;
             return (
-              <g key={objeto.id} {...comun}>
-                <ellipse cx={wPx / 2} cy={hPx / 2} rx={wPx / 2} ry={hPx / 2} fill={objeto.color} fillOpacity={(objeto.transparencia / 100) * 0.22} stroke={objeto.color} strokeWidth={seleccionado ? 2 : 1.2} />
-                {seleccionado ? <ellipse cx={wPx / 2} cy={hPx / 2} rx={wPx / 2} ry={hPx / 2} fill="none" stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="3 2" /> : null}
+              <g key={objeto.id} {...comun} transform={`translate(${centro.x} ${centro.y}) matrix(${a} ${b} ${c} ${d} 0 0)`}>
+                <ellipse cx={0} cy={0} rx={rx} ry={ry} fill={objeto.color} fillOpacity={(objeto.transparencia / 100) * 0.22} stroke={objeto.color} strokeWidth={seleccionado ? 2 : 1.2} vectorEffect="non-scaling-stroke" />
+                {seleccionado ? <ellipse cx={0} cy={0} rx={rx} ry={ry} fill="none" stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="3 2" vectorEffect="non-scaling-stroke" /> : null}
               </g>
             );
           }
 
           if (objeto.tipo === "rectangulo") {
+            const esquinas = cajaProyectada(objeto, config);
+            const puntosStr = esquinas.map((p) => `${p.x},${p.y}`).join(" ");
             return (
               <g key={objeto.id} {...comun}>
-                <rect width={wPx} height={hPx} fill={objeto.color} fillOpacity={(objeto.transparencia / 100) * 0.22} stroke={objeto.color} strokeWidth={seleccionado ? 2 : 1.2} />
-                {seleccionado ? <rect width={wPx} height={hPx} fill="none" stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="3 2" /> : null}
+                <polygon points={puntosStr} fill={objeto.color} fillOpacity={(objeto.transparencia / 100) * 0.22} stroke={objeto.color} strokeWidth={seleccionado ? 2 : 1.2} />
+                {seleccionado ? <polygon points={puntosStr} fill="none" stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="3 2" /> : null}
               </g>
             );
           }
 
           if (objeto.tipo === "texto") {
+            const ancla = metrosAIsometrico(objeto.posicion, config);
+            const wPx = metrosAPixeles(objeto.anchoM, zoom);
+            const hPx = metrosAPixeles(objeto.largoM, zoom);
             return (
               <g key={objeto.id} {...comun}>
-                <text x={0} y={metrosAPixeles(1, zoom)} fontFamily={objeto.fontFamily || FUENTE_TEXTO_DEFECTO} fontSize={metrosAPixeles(1.1, zoom)} fill={objeto.color} opacity={objeto.transparencia / 100}>
+                <text x={ancla.x} y={ancla.y + metrosAPixeles(1, zoom)} fontFamily={objeto.fontFamily || FUENTE_TEXTO_DEFECTO} fontSize={metrosAPixeles(1.1, zoom)} fill={objeto.color} opacity={objeto.transparencia / 100}>
                   {objeto.contenido}
                 </text>
-                {seleccionado ? <rect x={-4} y={-6} width={wPx + 8} height={hPx + 10} fill="none" stroke="var(--accent)" strokeWidth={1} strokeDasharray="3 2" /> : null}
+                {seleccionado ? <rect x={ancla.x - 4} y={ancla.y - 6} width={wPx + 8} height={hPx + 10} fill="none" stroke="var(--accent)" strokeWidth={1} strokeDasharray="3 2" /> : null}
               </g>
             );
           }
 
           const def = objeto.simboloId ? obtenerSimbolo(objeto.simboloId) : undefined;
+
+          if (def?.estiloIcono === "isometrico") {
+            const { anchorXPx, anchorYPx, displayWidthPx } = centroYEscalaSimbolo(objeto, config);
+            return (
+              <g key={objeto.id} {...comun}>
+                <IconoObjetoIsometrico
+                  src={def.icono}
+                  anchorXPx={anchorXPx}
+                  anchorYPx={anchorYPx}
+                  displayWidthPx={displayWidthPx}
+                  opacity={objeto.transparencia / 100}
+                  color={objeto.color}
+                  seleccionado={seleccionado}
+                />
+                {objeto.codigo ? (
+                  <text x={anchorXPx} y={anchorYPx + 14} textAnchor="middle" fontFamily="IBM Plex Mono, monospace" fontSize={11} fill="var(--ink)">
+                    {objeto.codigo}
+                  </text>
+                ) : null}
+                {seleccionado ? (
+                  <ellipse cx={anchorXPx} cy={anchorYPx} rx={displayWidthPx / 2} ry={displayWidthPx / 4} fill="none" stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="3 2" />
+                ) : null}
+              </g>
+            );
+          }
+
+          const wPx = metrosAPixeles(objeto.anchoM, zoom);
+          const hPx = metrosAPixeles(objeto.largoM, zoom);
+          const anclaPlano = metrosAIsometrico(objeto.posicion, config);
           return (
-            <g key={objeto.id} {...comun}>
+            <g
+              key={objeto.id}
+              {...comun}
+              transform={`translate(${anclaPlano.x} ${anclaPlano.y}) rotate(${objeto.rotacionGrados} ${wPx / 2} ${hPx / 2})`}
+            >
               {def ? (
                 <IconoObjeto
                   src={def.icono}
@@ -408,88 +471,88 @@ export function EditorCanvas() {
 
         {dibujo ? (
           <g pointerEvents="none">
-            {dibujo.tipo === "rectangulo" ? (
-              <rect
-                x={metrosAPixeles(Math.min(dibujo.inicio.x, dibujo.actual.x), zoom)}
-                y={metrosAPixeles(Math.min(dibujo.inicio.y, dibujo.actual.y), zoom)}
-                width={metrosAPixeles(Math.abs(dibujo.actual.x - dibujo.inicio.x), zoom)}
-                height={metrosAPixeles(Math.abs(dibujo.actual.y - dibujo.inicio.y), zoom)}
-                fill="var(--accent-soft)"
-                stroke="var(--accent)"
-                strokeDasharray="4 3"
-                strokeWidth={1.5}
-              />
-            ) : (
-              <ellipse
-                cx={metrosAPixeles((dibujo.inicio.x + dibujo.actual.x) / 2, zoom)}
-                cy={metrosAPixeles((dibujo.inicio.y + dibujo.actual.y) / 2, zoom)}
-                rx={metrosAPixeles(Math.abs(dibujo.actual.x - dibujo.inicio.x) / 2, zoom)}
-                ry={metrosAPixeles(Math.abs(dibujo.actual.y - dibujo.inicio.y) / 2, zoom)}
-                fill="var(--accent-soft)"
-                stroke="var(--accent)"
-                strokeDasharray="4 3"
-                strokeWidth={1.5}
-              />
-            )}
+            {(() => {
+              const xMin = Math.min(dibujo.inicio.x, dibujo.actual.x);
+              const yMin = Math.min(dibujo.inicio.y, dibujo.actual.y);
+              const anchoM = Math.abs(dibujo.actual.x - dibujo.inicio.x);
+              const largoM = Math.abs(dibujo.actual.y - dibujo.inicio.y);
+              if (dibujo.tipo === "rectangulo") {
+                const esquinas = puntosProyectadosPoligono(
+                  [
+                    { x: xMin, y: yMin },
+                    { x: xMin + anchoM, y: yMin },
+                    { x: xMin + anchoM, y: yMin + largoM },
+                    { x: xMin, y: yMin + largoM },
+                  ],
+                  config
+                );
+                return (
+                  <polygon
+                    points={esquinas.map((p) => `${p.x},${p.y}`).join(" ")}
+                    fill="var(--accent-soft)"
+                    stroke="var(--accent)"
+                    strokeDasharray="4 3"
+                    strokeWidth={1.5}
+                  />
+                );
+              }
+              const centro = metrosAIsometrico({ x: xMin + anchoM / 2, y: yMin + largoM / 2 }, config);
+              const { a, b, c, d } = matrizLineal(zoom);
+              return (
+                <g transform={`translate(${centro.x} ${centro.y}) matrix(${a} ${b} ${c} ${d} 0 0)`}>
+                  <ellipse cx={0} cy={0} rx={anchoM / 2} ry={largoM / 2} fill="var(--accent-soft)" stroke="var(--accent)" strokeDasharray="4 3" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
+                </g>
+              );
+            })()}
           </g>
         ) : null}
 
         {medicion ? (
-          <g pointerEvents="none">
-            <line
-              x1={metrosAPixeles(medicion.inicio.x, zoom)}
-              y1={metrosAPixeles(medicion.inicio.y, zoom)}
-              x2={metrosAPixeles(medicion.actual.x, zoom)}
-              y2={metrosAPixeles(medicion.actual.y, zoom)}
-              stroke="var(--accent)"
-              strokeWidth={1.5}
-              strokeDasharray="4 3"
-            />
-            <circle cx={metrosAPixeles(medicion.inicio.x, zoom)} cy={metrosAPixeles(medicion.inicio.y, zoom)} r={3} fill="var(--accent)" />
-            <circle cx={metrosAPixeles(medicion.actual.x, zoom)} cy={metrosAPixeles(medicion.actual.y, zoom)} r={3} fill="var(--accent)" />
-            <text
-              x={metrosAPixeles((medicion.inicio.x + medicion.actual.x) / 2, zoom)}
-              y={metrosAPixeles((medicion.inicio.y + medicion.actual.y) / 2, zoom) - 8}
-              textAnchor="middle"
-              fontFamily="IBM Plex Mono, monospace"
-              fontSize={12}
-              fontWeight={700}
-              fill="var(--accent)"
-            >
-              {distanciaEntrePuntos(medicion.inicio, medicion.actual).toFixed(2)} m
-            </text>
-          </g>
+          (() => {
+            const pInicio = metrosAIsometrico(medicion.inicio, config);
+            const pActual = metrosAIsometrico(medicion.actual, config);
+            const pMedio = metrosAIsometrico(
+              { x: (medicion.inicio.x + medicion.actual.x) / 2, y: (medicion.inicio.y + medicion.actual.y) / 2 },
+              config
+            );
+            return (
+              <g pointerEvents="none">
+                <line x1={pInicio.x} y1={pInicio.y} x2={pActual.x} y2={pActual.y} stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="4 3" />
+                <circle cx={pInicio.x} cy={pInicio.y} r={3} fill="var(--accent)" />
+                <circle cx={pActual.x} cy={pActual.y} r={3} fill="var(--accent)" />
+                <text x={pMedio.x} y={pMedio.y - 8} textAnchor="middle" fontFamily="IBM Plex Mono, monospace" fontSize={12} fontWeight={700} fill="var(--accent)">
+                  {distanciaEntrePuntos(medicion.inicio, medicion.actual).toFixed(2)} m
+                </text>
+              </g>
+            );
+          })()
         ) : null}
 
         {lineaInicio && previewPunto ? (
-          <g pointerEvents="none">
-            <line
-              x1={metrosAPixeles(lineaInicio.x, zoom)}
-              y1={metrosAPixeles(lineaInicio.y, zoom)}
-              x2={metrosAPixeles(previewPunto.x, zoom)}
-              y2={metrosAPixeles(previewPunto.y, zoom)}
-              stroke="var(--accent)"
-              strokeWidth={1.5}
-              strokeDasharray="4 3"
-            />
-          </g>
+          (() => {
+            const pInicio = metrosAIsometrico(lineaInicio, config);
+            const pActual = metrosAIsometrico(previewPunto, config);
+            return (
+              <g pointerEvents="none">
+                <line x1={pInicio.x} y1={pInicio.y} x2={pActual.x} y2={pActual.y} stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="4 3" />
+              </g>
+            );
+          })()
         ) : null}
 
         {poligonoPuntos && poligonoPuntos.length > 0 ? (
-          <g pointerEvents="none">
-            <polyline
-              points={[...poligonoPuntos, ...(previewPunto ? [previewPunto] : [])]
-                .map((p) => `${metrosAPixeles(p.x, zoom)},${metrosAPixeles(p.y, zoom)}`)
-                .join(" ")}
-              fill="none"
-              stroke="var(--accent)"
-              strokeWidth={1.5}
-              strokeDasharray="4 3"
-            />
-            {poligonoPuntos.map((p, i) => (
-              <circle key={i} cx={metrosAPixeles(p.x, zoom)} cy={metrosAPixeles(p.y, zoom)} r={3} fill="var(--accent)" />
-            ))}
-          </g>
+          (() => {
+            const puntos = puntosProyectadosPoligono([...poligonoPuntos, ...(previewPunto ? [previewPunto] : [])], config);
+            const puntosVertices = puntosProyectadosPoligono(poligonoPuntos, config);
+            return (
+              <g pointerEvents="none">
+                <polyline points={puntos.map((p) => `${p.x},${p.y}`).join(" ")} fill="none" stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="4 3" />
+                {puntosVertices.map((p, i) => (
+                  <circle key={i} cx={p.x} cy={p.y} r={3} fill="var(--accent)" />
+                ))}
+              </g>
+            );
+          })()
         ) : null}
       </svg>
     </div>

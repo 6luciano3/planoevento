@@ -1,5 +1,5 @@
 import { Store, Droplets, HeartPulse, Zap, Car, Trees, MapPin, type LucideIcon } from "lucide-react";
-import { metrosAPixeles } from "@/editor/geometry/scale";
+import { metrosAIsometrico, type ConfigIsometrica } from "@/editor/geometry/isometric";
 import type { ZonaCapa } from "@/editor/geometry/zonas";
 
 const ICONO_POR_NOMBRE: Record<string, LucideIcon> = {
@@ -13,7 +13,7 @@ const ICONO_POR_NOMBRE: Record<string, LucideIcon> = {
 
 interface ZonasCapasProps {
   zonas: ZonaCapa[];
-  zoom: number;
+  config: ConfigIsometrica;
 }
 
 /**
@@ -22,26 +22,31 @@ interface ZonasCapasProps {
  * en vez del lienzo técnico plano. Compartido por EditorCanvas.tsx
  * (interactivo) y PlanoSvg.tsx (exportación/impresión).
  */
-export function ZonasCapas({ zonas, zoom }: ZonasCapasProps) {
+export function ZonasCapas({ zonas, config }: ZonasCapasProps) {
   return (
     <g pointerEvents="none">
       {zonas.map((zona) => {
         const Icono = ICONO_POR_NOMBRE[zona.nombre] ?? MapPin;
-        const x = metrosAPixeles(zona.x, zoom);
-        const y = metrosAPixeles(zona.y, zoom);
-        const ancho = metrosAPixeles(zona.ancho, zoom);
-        const alto = metrosAPixeles(zona.alto, zoom);
-        const radio = Math.min(18, ancho / 8, alto / 8);
-        const anchoEtiqueta = Math.min(ancho - 12, 20 + zona.nombre.length * 8);
+        const esquinasM = [
+          { x: zona.x, y: zona.y },
+          { x: zona.x + zona.ancho, y: zona.y },
+          { x: zona.x + zona.ancho, y: zona.y + zona.alto },
+          { x: zona.x, y: zona.y + zona.alto },
+        ];
+        const puntos = esquinasM.map((p) => metrosAIsometrico(p, config));
+        const puntosStr = puntos.map((p) => `${p.x},${p.y}`).join(" ");
+        // Esquina más "arriba" en pantalla del rombo — ahí va la etiqueta.
+        const anclaEtiqueta = puntos.reduce((a, b) => (b.y < a.y ? b : a));
+        const anchoEtiqueta = Math.min(140, 20 + zona.nombre.length * 8);
 
         return (
           <g key={zona.capaId}>
-            <rect x={x} y={y} width={ancho} height={alto} rx={radio} fill={zona.color} fillOpacity={0.12} stroke={zona.color} strokeOpacity={0.45} strokeWidth={1.5} strokeDasharray="5 4" />
-            <rect x={x + 10} y={y - 13} width={anchoEtiqueta} height={26} rx={13} fill={zona.color} />
-            <g transform={`translate(${x + 20} ${y})`}>
+            <polygon points={puntosStr} fill={zona.color} fillOpacity={0.16} stroke={zona.color} strokeOpacity={0.5} strokeWidth={1.5} strokeDasharray="5 4" />
+            <rect x={anclaEtiqueta.x - anchoEtiqueta / 2} y={anclaEtiqueta.y - 13} width={anchoEtiqueta} height={26} rx={13} fill={zona.color} />
+            <g transform={`translate(${anclaEtiqueta.x - anchoEtiqueta / 2 + 10} ${anclaEtiqueta.y})`}>
               <Icono size={13} color="#fff" x={-6.5} y={-6.5} />
             </g>
-            <text x={x + 34} y={y + 4.5} fontFamily="Inter, sans-serif" fontWeight={700} fontSize={12} fill="#fff">
+            <text x={anclaEtiqueta.x - anchoEtiqueta / 2 + 24} y={anclaEtiqueta.y + 4.5} fontFamily="Inter, sans-serif" fontWeight={700} fontSize={12} fill="#fff">
               {zona.nombre}
             </text>
           </g>

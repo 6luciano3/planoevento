@@ -33,3 +33,63 @@ export function IconoObjeto({ src, width, height, opacity, color, seleccionado =
   }
   return <image href={src} width={width} height={height} opacity={opacity} onError={() => setError(true)} />;
 }
+
+/** Todos los PNG isométricos nuevos (public/symbols/<Categoría>/…) comparten este lienzo. */
+const ISO_ASSET_ASPECT = 1536 / 1024;
+
+/**
+ * Variante para los símbolos con `estiloIcono: "isometrico"` — a diferencia
+ * de `IconoObjeto`, no estira la imagen a un ancho×alto arbitrario: mantiene
+ * la proporción real del PNG y la ancla en su centro-inferior (convención
+ * estándar de sprites isométricos), que es el punto que le pasa
+ * `centroYEscalaSimbolo` en `editor/geometry/isometric.ts`.
+ */
+export function IconoObjetoIsometrico({
+  src,
+  anchorXPx,
+  anchorYPx,
+  displayWidthPx,
+  opacity,
+  color,
+  seleccionado = false,
+}: {
+  src: string;
+  anchorXPx: number;
+  anchorYPx: number;
+  displayWidthPx: number;
+  opacity: number;
+  color: string;
+  seleccionado?: boolean;
+}) {
+  const [error, setError] = useState(false);
+  const displayHeightPx = displayWidthPx / ISO_ASSET_ASPECT;
+  const x = anchorXPx - displayWidthPx / 2;
+  const y = anchorYPx - displayHeightPx;
+
+  if (error) {
+    return (
+      <rect
+        x={x}
+        y={y}
+        width={displayWidthPx}
+        height={displayHeightPx}
+        fill={color}
+        fillOpacity={opacity * 0.22}
+        stroke={color}
+        strokeWidth={seleccionado ? 2 : 1.2}
+      />
+    );
+  }
+  return (
+    <image
+      href={encodeURI(src)}
+      x={x}
+      y={y}
+      width={displayWidthPx}
+      height={displayHeightPx}
+      opacity={opacity}
+      preserveAspectRatio="xMidYMax slice"
+      onError={() => setError(true)}
+    />
+  );
+}

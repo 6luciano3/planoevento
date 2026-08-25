@@ -10,6 +10,8 @@ import { ELECTRICIDAD } from "./categories/electricidad";
 import { AGUA_GAS } from "./categories/agua-gas";
 import { SENALIZACION } from "./categories/senalizacion";
 import { VEGETACION } from "./categories/vegetacion";
+import { MOBILIARIO_URBANO } from "./categories/mobiliario-urbano";
+import { PERSONAS } from "./categories/personas";
 
 /** Catálogo completo de la biblioteca — PRD §11, agrupado por categoría. */
 export const SYMBOL_CATALOG: Record<CategoriaSimbolo, DefinicionSimbolo[]> = {
@@ -24,6 +26,8 @@ export const SYMBOL_CATALOG: Record<CategoriaSimbolo, DefinicionSimbolo[]> = {
   "agua-gas": AGUA_GAS,
   senalizacion: SENALIZACION,
   vegetacion: VEGETACION,
+  "mobiliario-urbano": MOBILIARIO_URBANO,
+  personas: PERSONAS,
 };
 
 export const TODOS_LOS_SIMBOLOS: DefinicionSimbolo[] = Object.values(SYMBOL_CATALOG).flat();
