@@ -18,6 +18,7 @@ import {
   puntosFiguraProyectada,
   puntosProyectadosPoligono,
   centroYEscalaSimbolo,
+  calcularPaddingSuperior,
   matrizLineal,
   type ConfigIsometrica,
 } from "@/editor/geometry/isometric";
@@ -75,7 +76,15 @@ export function EditorCanvas() {
   const herramienta = useEditorStore((s) => s.herramienta);
   const agregarFigura = useEditorStore((s) => s.agregarFigura);
 
-  const config: ConfigIsometrica = useMemo(() => ({ anchoPredioM: ANCHO_PREDIO_M, altoPredioM: ALTO_PREDIO_M, zoom }), [zoom]);
+  const config: ConfigIsometrica = useMemo(
+    () => ({
+      anchoPredioM: ANCHO_PREDIO_M,
+      altoPredioM: ALTO_PREDIO_M,
+      zoom,
+      paddingSuperiorPx: calcularPaddingSuperior(proyecto?.objetos ?? [], zoom),
+    }),
+    [zoom, proyecto?.objetos]
+  );
 
   const zonas = useMemo(() => (proyecto ? calcularZonasPorCapa(proyecto.objetos, proyecto.capas) : []), [proyecto]);
   const objetosOrdenados = useMemo(
@@ -408,6 +417,7 @@ export function EditorCanvas() {
                   anchorXPx={anchorXPx}
                   anchorYPx={anchorYPx}
                   displayWidthPx={displayWidthPx}
+                  aspect={def.aspectoIcono}
                   opacity={objeto.transparencia / 100}
                   color={objeto.color}
                   seleccionado={seleccionado}

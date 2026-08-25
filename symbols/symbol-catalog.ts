@@ -12,6 +12,7 @@ import { SENALIZACION } from "./categories/senalizacion";
 import { VEGETACION } from "./categories/vegetacion";
 import { MOBILIARIO_URBANO } from "./categories/mobiliario-urbano";
 import { PERSONAS } from "./categories/personas";
+import { STANDS } from "./categories/stands";
 
 /** Catálogo completo de la biblioteca — PRD §11, agrupado por categoría. */
 export const SYMBOL_CATALOG: Record<CategoriaSimbolo, DefinicionSimbolo[]> = {
@@ -28,6 +29,7 @@ export const SYMBOL_CATALOG: Record<CategoriaSimbolo, DefinicionSimbolo[]> = {
   vegetacion: VEGETACION,
   "mobiliario-urbano": MOBILIARIO_URBANO,
   personas: PERSONAS,
+  stands: STANDS,
 };
 
 export const TODOS_LOS_SIMBOLOS: DefinicionSimbolo[] = Object.values(SYMBOL_CATALOG).flat();

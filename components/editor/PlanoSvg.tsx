@@ -15,6 +15,7 @@ import {
   puntosFiguraProyectada,
   puntosProyectadosPoligono,
   centroYEscalaSimbolo,
+  calcularPaddingSuperior,
   matrizLineal,
   type ConfigIsometrica,
 } from "@/editor/geometry/isometric";
@@ -39,7 +40,12 @@ interface PlanoSvgProps {
  * texto.
  */
 export function PlanoSvg({ objetos, capas, soloImprimibles = false }: PlanoSvgProps) {
-  const config: ConfigIsometrica = { anchoPredioM: ANCHO_PREDIO_M, altoPredioM: ALTO_PREDIO_M, zoom: 1 };
+  const config: ConfigIsometrica = {
+    anchoPredioM: ANCHO_PREDIO_M,
+    altoPredioM: ALTO_PREDIO_M,
+    zoom: 1,
+    paddingSuperiorPx: calcularPaddingSuperior(objetos, 1),
+  };
   const { anchoPx, altoPx } = dimensionesLienzoIsometrico(config);
 
   const capaVisible = (capaId: string) => {
@@ -135,6 +141,7 @@ export function PlanoSvg({ objetos, capas, soloImprimibles = false }: PlanoSvgPr
                 anchorXPx={anchorXPx}
                 anchorYPx={anchorYPx}
                 displayWidthPx={displayWidthPx}
+                aspect={def.aspectoIcono}
                 opacity={objeto.transparencia / 100}
                 color={objeto.color}
               />

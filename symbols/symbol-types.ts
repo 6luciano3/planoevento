@@ -20,4 +20,5 @@ export const CATEGORIAS: DefinicionCategoria[] = [
   { id: "vegetacion", nombre: "Vegetación" },
   { id: "mobiliario-urbano", nombre: "Mobiliario urbano" },
   { id: "personas", nombre: "Personas y flujo" },
+  { id: "stands", nombre: "Stands" },
 ];

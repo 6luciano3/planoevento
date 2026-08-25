@@ -1,4 +1,5 @@
 import { EDITOR_CONFIG } from "@/config/editor.config";
+import { obtenerSimbolo } from "@/symbols/symbol-catalog";
 import type { Punto } from "@/types/location";
 import type { ObjetoPlano } from "@/types/editor";
 
@@ -16,13 +17,16 @@ import type { ObjetoPlano } from "@/types/editor";
  */
 const TILE_WIDTH_BASE_PX = EDITOR_CONFIG.pixelsPerMeter * 2; // 48
 
-/** Espacio fijo arriba del lienzo para que los sprites altos (pérgolas, árboles) no se corten. */
-export const ISO_VERTICAL_PADDING_PX = 260;
+/** Espacio mínimo arriba del lienzo para sprites chicos (pérgolas, árboles) — el real se calcula con `calcularPaddingSuperior`. */
+export const ISO_VERTICAL_PADDING_MINIMO_PX = 260;
+const MARGEN_SPRITE_PX = 40;
 
 export interface ConfigIsometrica {
   anchoPredioM: number;
   altoPredioM: number;
   zoom: number;
+  /** Espacio arriba del lienzo para que los sprites más altos no se corten — ver `calcularPaddingSuperior`. */
+  paddingSuperiorPx?: number;
 }
 
 function coeficientes(zoom: number) {
@@ -34,8 +38,31 @@ function coeficientes(zoom: number) {
 
 function origen(cfg: ConfigIsometrica) {
   const { kx } = coeficientes(cfg.zoom);
-  return { origenX: cfg.altoPredioM * kx, origenY: ISO_VERTICAL_PADDING_PX };
+  return { origenX: cfg.altoPredioM * kx, origenY: cfg.paddingSuperiorPx ?? ISO_VERTICAL_PADDING_MINIMO_PX };
 }
+
+/**
+ * Cuánto espacio hace falta arriba del lienzo para que el sprite isométrico
+ * más alto entre los objetos colocados no se corte — los stands grandes
+ * (pabellones de hasta 12×9m) necesitan mucho más que un banco o un árbol.
+ * Objetos sin definición isométrica (planos, sin `simboloId`) no aportan.
+ */
+export function calcularPaddingSuperior(objetos: ObjetoPlano[], zoom: number): number {
+  const { kx } = coeficientes(zoom);
+  let maxAlturaPx = 0;
+  for (const objeto of objetos) {
+    if (objeto.tipo !== "simbolo" || !objeto.simboloId) continue;
+    const def = obtenerSimbolo(objeto.simboloId);
+    if (def?.estiloIcono !== "isometrico") continue;
+    const aspecto = def.aspectoIcono ?? ISO_ASPECT_DEFECTO;
+    const anchoPx = (objeto.anchoM + objeto.largoM) * kx;
+    const altoPx = anchoPx / aspecto;
+    if (altoPx > maxAlturaPx) maxAlturaPx = altoPx;
+  }
+  return Math.max(ISO_VERTICAL_PADDING_MINIMO_PX, maxAlturaPx + MARGEN_SPRITE_PX);
+}
+
+const ISO_ASPECT_DEFECTO = 1536 / 1024;
 
 /** Punto lógico (metros) → posición de pantalla (px), con el origen desplazado para que nada quede fuera del lienzo. */
 export function metrosAIsometrico(punto: Punto, cfg: ConfigIsometrica): Punto {
@@ -61,7 +88,7 @@ export function dimensionesLienzoIsometrico(cfg: ConfigIsometrica): { anchoPx: n
   const { kx, ky } = coeficientes(cfg.zoom);
   return {
     anchoPx: (cfg.anchoPredioM + cfg.altoPredioM) * kx,
-    altoPx: (cfg.anchoPredioM + cfg.altoPredioM) * ky + ISO_VERTICAL_PADDING_PX,
+    altoPx: (cfg.anchoPredioM + cfg.altoPredioM) * ky + (cfg.paddingSuperiorPx ?? ISO_VERTICAL_PADDING_MINIMO_PX),
   };
 }
 

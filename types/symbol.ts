@@ -11,7 +11,8 @@ export type CategoriaSimbolo =
   | "senalizacion"
   | "vegetacion"
   | "mobiliario-urbano"
-  | "personas";
+  | "personas"
+  | "stands";
 
 /** Definición estática de un componente de la biblioteca (no un objeto ya colocado). */
 export interface DefinicionSimbolo {
@@ -34,4 +35,10 @@ export interface DefinicionSimbolo {
    * estirado a ancho×alto y rotable.
    */
   estiloIcono?: "plano" | "isometrico";
+  /**
+   * Proporción ancho/alto real del PNG isométrico (ej. 1536/1024). Sin valor
+   * ⇒ se asume 1536/1024, el tamaño estándar de la mayoría de los assets
+   * isométricos — solo hace falta declararlo para los que tienen otro lienzo.
+   */
+  aspectoIcono?: number;
 }

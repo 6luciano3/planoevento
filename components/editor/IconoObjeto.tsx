@@ -34,21 +34,23 @@ export function IconoObjeto({ src, width, height, opacity, color, seleccionado =
   return <image href={src} width={width} height={height} opacity={opacity} onError={() => setError(true)} />;
 }
 
-/** Todos los PNG isométricos nuevos (public/symbols/<Categoría>/…) comparten este lienzo. */
-const ISO_ASSET_ASPECT = 1536 / 1024;
+/** La mayoría de los PNG isométricos (public/symbols/<Categoría>/…) comparten este lienzo. */
+export const ISO_ASSET_ASPECT_DEFECTO = 1536 / 1024;
 
 /**
  * Variante para los símbolos con `estiloIcono: "isometrico"` — a diferencia
  * de `IconoObjeto`, no estira la imagen a un ancho×alto arbitrario: mantiene
- * la proporción real del PNG y la ancla en su centro-inferior (convención
- * estándar de sprites isométricos), que es el punto que le pasa
- * `centroYEscalaSimbolo` en `editor/geometry/isometric.ts`.
+ * la proporción real del PNG (`aspect`, normalmente `def.aspectoIcono` del
+ * catálogo) y la ancla en su centro-inferior (convención estándar de sprites
+ * isométricos), que es el punto que le pasa `centroYEscalaSimbolo` en
+ * `editor/geometry/isometric.ts`.
  */
 export function IconoObjetoIsometrico({
   src,
   anchorXPx,
   anchorYPx,
   displayWidthPx,
+  aspect = ISO_ASSET_ASPECT_DEFECTO,
   opacity,
   color,
   seleccionado = false,
@@ -57,12 +59,13 @@ export function IconoObjetoIsometrico({
   anchorXPx: number;
   anchorYPx: number;
   displayWidthPx: number;
+  aspect?: number;
   opacity: number;
   color: string;
   seleccionado?: boolean;
 }) {
   const [error, setError] = useState(false);
-  const displayHeightPx = displayWidthPx / ISO_ASSET_ASPECT;
+  const displayHeightPx = displayWidthPx / aspect;
   const x = anchorXPx - displayWidthPx / 2;
   const y = anchorYPx - displayHeightPx;
 
