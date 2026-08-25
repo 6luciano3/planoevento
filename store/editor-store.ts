@@ -14,6 +14,7 @@ import {
 } from "@/editor/core/EditorState";
 import { HistoryManager } from "@/editor/core/HistoryManager";
 import { FUENTE_TEXTO_DEFECTO } from "@/config/fonts";
+import { FAMILIAS_CAMINO } from "@/editor/tools/caminoAutoTile";
 
 const historial = new HistoryManager<ObjetoPlano[]>(50);
 
@@ -29,14 +30,17 @@ function conCapaVisible(capas: ProyectoPlano["capas"], capaId: string): Proyecto
 interface EditorStoreState extends EstadoEditor {
   proyecto: ProyectoPlano | null;
   capaActivaId: string | null;
+  familiaCaminoActiva: string;
   cargar: (proyectoId: string) => void;
   guardar: () => void;
   setHerramienta: (h: HerramientaEditor) => void;
   setZoom: (z: number) => void;
   toggleCuadricula: () => void;
   setCapaActiva: (id: string) => void;
+  setFamiliaCamino: (prefijo: string) => void;
   seleccionar: (id: string | null) => void;
   soltarSimbolo: (simboloId: string, posicion: Punto) => void;
+  agregarCamino: (piezas: { simboloId: string; posicion: Punto }[]) => number;
   agregarFigura: (figura: {
     tipo: "linea" | "polilinea" | "rectangulo" | "circulo" | "poligono" | "texto";
     posicion: Punto;
@@ -65,6 +69,7 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
   ...ESTADO_EDITOR_INICIAL,
   proyecto: null,
   capaActivaId: null,
+  familiaCaminoActiva: FAMILIAS_CAMINO[0].prefijo,
 
   cargar: (proyectoId) => {
     const proyecto = projectService.obtenerProyecto(proyectoId) ?? null;
@@ -86,6 +91,7 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
   setZoom: (zoom) => set({ zoom }),
   toggleCuadricula: () => set((s) => ({ mostrarCuadricula: !s.mostrarCuadricula })),
   setCapaActiva: (capaActivaId) => set({ capaActivaId }),
+  setFamiliaCamino: (familiaCaminoActiva) => set({ familiaCaminoActiva }),
   seleccionar: (seleccionId) => set({ seleccionId }),
 
   soltarSimbolo: (simboloId, posicion) => {
@@ -172,6 +178,29 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     const objetos = [...proyecto.objetos, ...nuevos];
     const actualizado = { ...proyecto, objetos, capas: conCapaVisible(proyecto.capas, capaActivaId) };
     set({ proyecto: actualizado });
+    projectService.guardarProyecto(actualizado);
+    return nuevos.length;
+  },
+
+  /** Coloca de una sola vez todas las piezas que arma la herramienta "Camino" — un solo registro de historial. */
+  agregarCamino: (piezas) => {
+    const { proyecto, capaActivaId } = get();
+    if (!proyecto || !capaActivaId || piezas.length === 0) return 0;
+
+    historial.registrar(proyecto.objetos);
+    const usadosEnEstaTanda: Record<string, number> = {};
+    const nuevos: ObjetoPlano[] = [];
+    for (const pieza of piezas) {
+      const previos = proyecto.objetos.filter((o) => o.simboloId === pieza.simboloId).length;
+      usadosEnEstaTanda[pieza.simboloId] = (usadosEnEstaTanda[pieza.simboloId] ?? 0) + 1;
+      const numero = previos + usadosEnEstaTanda[pieza.simboloId];
+      const nuevo = crearObjetoDesdeSimbolo(pieza.simboloId, pieza.posicion, capaActivaId, numero);
+      if (nuevo) nuevos.push(nuevo);
+    }
+
+    const objetos = [...proyecto.objetos, ...nuevos];
+    const actualizado = { ...proyecto, objetos, capas: conCapaVisible(proyecto.capas, capaActivaId) };
+    set({ proyecto: actualizado, herramienta: "seleccionar" });
     projectService.guardarProyecto(actualizado);
     return nuevos.length;
   },

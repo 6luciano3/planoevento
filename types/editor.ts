@@ -36,7 +36,8 @@ export type HerramientaEditor =
   | "circulo"
   | "poligono"
   | "texto"
-  | "medir";
+  | "medir"
+  | "camino";
 
 export interface EstadoEditor {
   herramienta: HerramientaEditor;

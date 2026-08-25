@@ -13,6 +13,11 @@ import { VEGETACION } from "./categories/vegetacion";
 import { MOBILIARIO_URBANO } from "./categories/mobiliario-urbano";
 import { PERSONAS } from "./categories/personas";
 import { STANDS } from "./categories/stands";
+import { SENDEROS_TIERRA } from "./categories/senderos-tierra";
+import { CAMINOS_PAVIMENTADOS } from "./categories/caminos-pavimentados";
+import { CALLES_VEHICULARES } from "./categories/calles-vehiculares";
+import { CERRAMIENTOS } from "./categories/cerramientos";
+import { SUPERFICIES } from "./categories/superficies";
 
 /** Catálogo completo de la biblioteca — PRD §11, agrupado por categoría. */
 export const SYMBOL_CATALOG: Record<CategoriaSimbolo, DefinicionSimbolo[]> = {
@@ -30,6 +35,11 @@ export const SYMBOL_CATALOG: Record<CategoriaSimbolo, DefinicionSimbolo[]> = {
   "mobiliario-urbano": MOBILIARIO_URBANO,
   personas: PERSONAS,
   stands: STANDS,
+  "senderos-tierra": SENDEROS_TIERRA,
+  "caminos-pavimentados": CAMINOS_PAVIMENTADOS,
+  "calles-vehiculares": CALLES_VEHICULARES,
+  cerramientos: CERRAMIENTOS,
+  superficies: SUPERFICIES,
 };
 
 export const TODOS_LOS_SIMBOLOS: DefinicionSimbolo[] = Object.values(SYMBOL_CATALOG).flat();

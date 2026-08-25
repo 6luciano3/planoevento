@@ -20,6 +20,7 @@ import {
   Square,
   Circle,
   Pentagon,
+  Route,
   Type,
   Ruler,
   LayoutGrid,
@@ -29,6 +30,7 @@ import {
 import { useEditorStore } from "@/store/editor-store";
 import { EDITOR_CONFIG } from "@/config/editor.config";
 import { HERRAMIENTAS } from "@/editor/tools";
+import { FAMILIAS_CAMINO } from "@/editor/tools/caminoAutoTile";
 import { DistributeModal } from "./DistributeModal";
 import type { HerramientaEditor } from "@/types/editor";
 import type { EstadoGuardado } from "@/hooks/useAutosave";
@@ -56,6 +58,7 @@ const ICONO_HERRAMIENTA: Record<HerramientaEditor, typeof MousePointer2> = {
   rectangulo: Square,
   circulo: Circle,
   poligono: Pentagon,
+  camino: Route,
   texto: Type,
   medir: Ruler,
 };
@@ -70,6 +73,8 @@ export function EditorToolbar({ proyectoId, proyectoNombre, estadoGuardado, pane
   const rehacer = useEditorStore((s) => s.rehacer);
   const herramienta = useEditorStore((s) => s.herramienta);
   const setHerramienta = useEditorStore((s) => s.setHerramienta);
+  const familiaCaminoActiva = useEditorStore((s) => s.familiaCaminoActiva);
+  const setFamiliaCamino = useEditorStore((s) => s.setFamiliaCamino);
   const escalaNumerica = useEditorStore((s) => s.proyecto?.plano.escalaNumerica);
   const [distribuirAbierto, setDistribuirAbierto] = useState(false);
 
@@ -127,6 +132,21 @@ export function EditorToolbar({ proyectoId, proyectoNombre, estadoGuardado, pane
             );
           })}
         </div>
+
+        {herramienta === "camino" ? (
+          <select
+            className="camino-familia-select"
+            value={familiaCaminoActiva}
+            onChange={(e) => setFamiliaCamino(e.target.value)}
+            title="Familia de piezas para la herramienta Camino"
+          >
+            {FAMILIAS_CAMINO.map((f) => (
+              <option key={f.prefijo} value={f.prefijo}>
+                {f.nombre}
+              </option>
+            ))}
+          </select>
+        ) : null}
 
         <span className="toolbar-sep" />
 

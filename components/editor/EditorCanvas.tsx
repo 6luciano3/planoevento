@@ -23,6 +23,7 @@ import {
   type ConfigIsometrica,
 } from "@/editor/geometry/isometric";
 import { FUENTE_TEXTO_DEFECTO } from "@/config/fonts";
+import { calcularPiezasCamino, TILE_M } from "@/editor/tools/caminoAutoTile";
 import type { Punto } from "@/types/location";
 import type { HerramientaEditor } from "@/types/editor";
 
@@ -41,6 +42,8 @@ function textoAyuda(herramienta: HerramientaEditor, hayLineaIniciada: boolean): 
       return "Clic para cada punto · doble clic para terminar (mínimo 2 puntos, Esc para cancelar)";
     case "poligono":
       return "Clic para cada vértice · doble clic para cerrar la forma (mínimo 3 puntos, Esc para cancelar)";
+    case "camino":
+      return "Clic para cada punto del recorrido · doble clic para terminar (Esc para cancelar)";
     case "rectangulo":
       return "Arrastrá para dibujar el rectángulo";
     case "circulo":
@@ -75,6 +78,8 @@ export function EditorCanvas() {
   const moverObjeto = useEditorStore((s) => s.moverObjeto);
   const herramienta = useEditorStore((s) => s.herramienta);
   const agregarFigura = useEditorStore((s) => s.agregarFigura);
+  const familiaCaminoActiva = useEditorStore((s) => s.familiaCaminoActiva);
+  const agregarCamino = useEditorStore((s) => s.agregarCamino);
 
   const config: ConfigIsometrica = useMemo(
     () => ({
@@ -100,6 +105,7 @@ export function EditorCanvas() {
   const [medicion, setMedicion] = useState<Medicion | null>(null);
   const [lineaInicio, setLineaInicio] = useState<Punto | null>(null);
   const [poligonoPuntos, setPoligonoPuntos] = useState<Punto[] | null>(null);
+  const [caminoPuntos, setCaminoPuntos] = useState<Punto[] | null>(null);
   const [previewPunto, setPreviewPunto] = useState<Punto | null>(null);
 
   const { anchoPx, altoPx } = dimensionesLienzoIsometrico(config);
@@ -133,6 +139,7 @@ export function EditorCanvas() {
     setMedicion(null);
     setLineaInicio(null);
     setPoligonoPuntos(null);
+    setCaminoPuntos(null);
     setPreviewPunto(null);
   }, [herramienta]);
 
@@ -143,6 +150,7 @@ export function EditorCanvas() {
       setMedicion(null);
       setLineaInicio(null);
       setPoligonoPuntos(null);
+      setCaminoPuntos(null);
       setPreviewPunto(null);
     }
     window.addEventListener("keydown", alPresionarTecla);
@@ -204,6 +212,11 @@ export function EditorCanvas() {
     }
     if (lineaInicio || (poligonoPuntos && poligonoPuntos.length > 0)) {
       setPreviewPunto(posicionDesdeEvento(event.clientX, event.clientY));
+      return;
+    }
+    if (caminoPuntos && caminoPuntos.length > 0) {
+      const p = posicionDesdeEvento(event.clientX, event.clientY);
+      setPreviewPunto({ x: Math.round(p.x / TILE_M) * TILE_M, y: Math.round(p.y / TILE_M) * TILE_M });
     }
   }
 
@@ -269,10 +282,28 @@ export function EditorCanvas() {
     if (herramienta === "polilinea" || herramienta === "poligono") {
       setPoligonoPuntos((prev) => [...(prev ?? []), p]);
       setPreviewPunto(p);
+      return;
+    }
+
+    if (herramienta === "camino") {
+      const pAjustado = { x: Math.round(p.x / TILE_M) * TILE_M, y: Math.round(p.y / TILE_M) * TILE_M };
+      setCaminoPuntos((prev) => [...(prev ?? []), pAjustado]);
+      setPreviewPunto(pAjustado);
     }
   }
 
   function alDobleClicLienzo(event: ReactMouseEvent<HTMLDivElement>) {
+    if (herramienta === "camino") {
+      event.preventDefault();
+      if (caminoPuntos && caminoPuntos.length >= 2) {
+        const piezas = calcularPiezasCamino(caminoPuntos, familiaCaminoActiva, TILE_M);
+        agregarCamino(piezas);
+      }
+      setCaminoPuntos(null);
+      setPreviewPunto(null);
+      return;
+    }
+
     if (herramienta !== "polilinea" && herramienta !== "poligono") return;
     event.preventDefault();
     const minimo = herramienta === "poligono" ? 3 : 2;
@@ -559,6 +590,21 @@ export function EditorCanvas() {
                 <polyline points={puntos.map((p) => `${p.x},${p.y}`).join(" ")} fill="none" stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="4 3" />
                 {puntosVertices.map((p, i) => (
                   <circle key={i} cx={p.x} cy={p.y} r={3} fill="var(--accent)" />
+                ))}
+              </g>
+            );
+          })()
+        ) : null}
+
+        {caminoPuntos && caminoPuntos.length > 0 ? (
+          (() => {
+            const puntos = puntosProyectadosPoligono([...caminoPuntos, ...(previewPunto ? [previewPunto] : [])], config);
+            const puntosVertices = puntosProyectadosPoligono(caminoPuntos, config);
+            return (
+              <g pointerEvents="none">
+                <polyline points={puntos.map((p) => `${p.x},${p.y}`).join(" ")} fill="none" stroke="var(--accent)" strokeWidth={2.5} strokeDasharray="4 3" />
+                {puntosVertices.map((p, i) => (
+                  <circle key={i} cx={p.x} cy={p.y} r={3.5} fill="var(--accent)" />
                 ))}
               </g>
             );

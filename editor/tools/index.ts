@@ -16,6 +16,7 @@ export const HERRAMIENTAS: DefinicionHerramienta[] = [
   { id: "rectangulo", label: "Rectángulo", atajo: "R" },
   { id: "circulo", label: "Círculo", atajo: "C" },
   { id: "poligono", label: "Polígono", atajo: "G" },
+  { id: "camino", label: "Camino", atajo: "K" },
   { id: "texto", label: "Texto", atajo: "T" },
   { id: "medir", label: "Medir distancia", atajo: "D" },
 ];

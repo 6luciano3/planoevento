@@ -12,7 +12,12 @@ export type CategoriaSimbolo =
   | "vegetacion"
   | "mobiliario-urbano"
   | "personas"
-  | "stands";
+  | "stands"
+  | "senderos-tierra"
+  | "caminos-pavimentados"
+  | "calles-vehiculares"
+  | "cerramientos"
+  | "superficies";
 
 /** Definición estática de un componente de la biblioteca (no un objeto ya colocado). */
 export interface DefinicionSimbolo {
