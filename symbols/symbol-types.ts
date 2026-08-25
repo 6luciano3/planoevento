@@ -26,4 +26,5 @@ export const CATEGORIAS: DefinicionCategoria[] = [
   { id: "calles-vehiculares", nombre: "Calles vehiculares" },
   { id: "cerramientos", nombre: "Cerramientos y accesos" },
   { id: "superficies", nombre: "Superficies y bases" },
+  { id: "elementos-misiones", nombre: "Elementos característicos de Misiones" },
 ];

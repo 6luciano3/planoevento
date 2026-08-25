@@ -23,4 +23,5 @@ export const MOBILIARIO_URBANO: DefinicionSimbolo[] = [
   { id: "ordenamiento-filas", nombre: "Sistema de ordenamiento de filas", categoria: "mobiliario-urbano", icono: `${CARPETA}/13_ordenamiento_filas.png`, prefijo: "MU", defaultWidth: 3, defaultHeight: 1.5, unit: "m", rotatable: false, resizable: true, estiloIcono: "isometrico" },
   { id: "conjunto-mastiles", nombre: "Conjunto de mástiles", categoria: "mobiliario-urbano", icono: `${CARPETA}/14_conjunto_mastiles.png`, prefijo: "MU", defaultWidth: 2, defaultHeight: 2, unit: "m", rotatable: false, resizable: true, estiloIcono: "isometrico" },
   { id: "banco-solar", nombre: "Banco con carga solar", categoria: "mobiliario-urbano", icono: `${CARPETA}/15_banco_carga_solar.png`, prefijo: "MU", defaultWidth: 2, defaultHeight: 1, unit: "m", rotatable: false, resizable: true, estiloIcono: "isometrico" },
+  { id: "fuente-agua", nombre: "Fuente de agua", categoria: "mobiliario-urbano", icono: "/symbols/Fuente de agua/fuente_agua.png", prefijo: "MU", defaultWidth: 3, defaultHeight: 3, unit: "m", rotatable: false, resizable: true, estiloIcono: "isometrico" },
 ];

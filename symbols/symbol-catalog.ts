@@ -18,6 +18,7 @@ import { CAMINOS_PAVIMENTADOS } from "./categories/caminos-pavimentados";
 import { CALLES_VEHICULARES } from "./categories/calles-vehiculares";
 import { CERRAMIENTOS } from "./categories/cerramientos";
 import { SUPERFICIES } from "./categories/superficies";
+import { ELEMENTOS_MISIONES } from "./categories/elementos-misiones";
 
 /** Catálogo completo de la biblioteca — PRD §11, agrupado por categoría. */
 export const SYMBOL_CATALOG: Record<CategoriaSimbolo, DefinicionSimbolo[]> = {
@@ -40,6 +41,7 @@ export const SYMBOL_CATALOG: Record<CategoriaSimbolo, DefinicionSimbolo[]> = {
   "calles-vehiculares": CALLES_VEHICULARES,
   cerramientos: CERRAMIENTOS,
   superficies: SUPERFICIES,
+  "elementos-misiones": ELEMENTOS_MISIONES,
 };
 
 export const TODOS_LOS_SIMBOLOS: DefinicionSimbolo[] = Object.values(SYMBOL_CATALOG).flat();

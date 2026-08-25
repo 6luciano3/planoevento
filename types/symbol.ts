@@ -17,7 +17,8 @@ export type CategoriaSimbolo =
   | "caminos-pavimentados"
   | "calles-vehiculares"
   | "cerramientos"
-  | "superficies";
+  | "superficies"
+  | "elementos-misiones";
 
 /** Definición estática de un componente de la biblioteca (no un objeto ya colocado). */
 export interface DefinicionSimbolo {
