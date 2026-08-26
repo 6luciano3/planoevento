@@ -15,14 +15,15 @@ import type { ObjetoPlantilla, PlantillaPlano } from "@/types/template";
  * la suma `anchoM + largoM` solo controla la escala del dibujo — ver
  * `centroYEscalaSimbolo` en editor/geometry/isometric.ts.
  *
- * Todas comparten el mismo esqueleto profesional (BASE_SERVICIOS): acceso
- * principal enmarcado con cerco, promenade pavimentada con ramal hasta la
- * entrada (piezas reales de "Caminos peatonales pavimentados", no una capa
- * decorativa), 3 salidas de emergencia distribuidas, ruta y sanitario
- * accesibles, matafuegos en las 4 esquinas y cartelería/mobiliario/luminaria
- * repartidos a lo largo del recorrido — el contenido propio de cada
- * plantilla se ubica entre y=6 e y=26, dejando franca la franja y=27-38
- * donde vive ese esqueleto común.
+ * Todas comparten el mismo esqueleto profesional (BASE_SERVICIOS): una
+ * promenade pavimentada con ramal hasta la entrada (piezas reales de
+ * "Caminos peatonales pavimentados", no una capa decorativa), 3 salidas de
+ * emergencia distribuidas, ruta y sanitario accesibles, matafuegos a mitad
+ * de cada borde y cartelería/mobiliario/luminaria repartidos en dos franjas
+ * — el contenido propio de cada plantilla se ubica entre y=6 e y=26,
+ * dejando franca la franja y=27-39 donde vive ese esqueleto común. La
+ * proyección isométrica "aprieta" visualmente las 4 puntas del rombo del
+ * predio, así que nada del esqueleto vive ahí.
  */
 
 type Opts = Partial<Pick<ObjetoPlantilla, "anchoM" | "largoM" | "rotacionGrados">>;
@@ -93,7 +94,7 @@ function uno(simboloId: string, capa: string, x: number, y: number, opts: Opts =
  */
 function corredorPrincipal(): ObjetoPlantilla[] {
   const piezas: ObjetoPlantilla[] = [];
-  for (let x = 6; x <= 54; x += 4) {
+  for (let x = 10; x <= 50; x += 4) {
     if (x === 26) continue;
     piezas.push(uno("camino-pavimentado-recta-este-oeste", "Circulación", x, 30));
   }
@@ -102,50 +103,51 @@ function corredorPrincipal(): ObjetoPlantilla[] {
   return piezas;
 }
 
-/** Esqueleto profesional presente en las 10 plantillas — ver comentario del archivo. */
+/**
+ * Esqueleto profesional presente en las 10 plantillas — ver comentario del
+ * archivo. La proyección isométrica "aprieta" visualmente las 4 puntas del
+ * rombo del predio (cerca de x/y = 0 o 60/40), así que nada de esto vive
+ * ahí: la promenade (y=30-34) separa una franja norte angosta de faroles y
+ * papeleros (y=27-29, pegada al contenido de cada plantilla) de la plaza de
+ * acceso al sur (y=34-39, entrada/sanitarios/emergencias), y los matafuegos
+ * van a la mitad de cada borde, no a las esquinas.
+ */
 const BASE_SERVICIOS: ObjetoPlantilla[] = [
-  // Acceso principal enmarcado con cerco
-  uno("entrada-principal-portico", "Circulación", 25, 36),
-  uno("cerco-recto-este-oeste", "Predio", 18, 38),
-  uno("cerco-recto-este-oeste", "Predio", 33, 38),
-  uno("esquina-cerco-oeste-norte", "Predio", 16, 38),
-  uno("esquina-cerco-norte-este", "Predio", 39, 38),
-
   // Promenade pavimentada principal + ramal de acceso
   ...corredorPrincipal(),
 
-  // Salidas de emergencia — 3 distribuidas, no 2 enfrentadas
-  uno("iso-salida-emergencia", "Circulación", 2, 34),
-  uno("iso-salida-emergencia", "Circulación", 57, 34),
-  uno("salida-emergencia-cerco", "Circulación", 26, 3),
+  // Franja norte, pegada al contenido: orientación, luz y agua
+  uno("iso-totem-direccional-multipanel", "Servicios", 26, 27),
+  uno("iso-papelero-urbano-negro", "Servicios", 14, 28),
+  uno("iso-papelero-urbano-negro", "Servicios", 42, 28),
+  uno("iso-farola-peatonal-negra", "Electricidad", 18, 28),
+  uno("iso-farola-peatonal-negra", "Electricidad", 38, 28),
+  uno("bebedero", "Servicios", 30, 28),
 
-  // Sanitarios y accesibilidad, cerca del ingreso
-  uno("bano-mujeres", "Servicios", 4, 33),
-  uno("bano-hombres", "Servicios", 7, 33),
-  uno("bano-accesible", "Servicios", 10, 33),
-  uno("modulo-estacionamiento-accesible", "Estacionamiento", 1, 2),
-  uno("modulo-estacionamiento-bicicletas", "Estacionamiento", 6, 2),
-  uno("iso-rampa-accesible", "Circulación", 20, 36),
+  // Plaza de acceso al sur: salidas, sanitarios, rampa, entrada, estacionamiento y emergencias
+  uno("iso-salida-emergencia", "Circulación", 4, 35),
+  uno("bano-mujeres", "Servicios", 8, 35),
+  uno("bano-hombres", "Servicios", 11, 35),
+  uno("bano-accesible", "Servicios", 14, 35),
+  uno("iso-rampa-accesible", "Circulación", 18, 36),
+  uno("entrada-principal-portico", "Circulación", 25, 36),
+  uno("iso-senal-informacion", "Servicios", 32, 35),
+  uno("modulo-estacionamiento-accesible", "Estacionamiento", 36, 34),
+  uno("modulo-estacionamiento-bicicletas", "Estacionamiento", 41, 35),
+  uno("iso-enfermeria", "Emergencias", 45, 34),
+  uno("iso-puesto-seguridad", "Emergencias", 50, 35),
+  uno("iso-salida-emergencia", "Circulación", 55, 35),
 
-  // Emergencias y seguridad — matafuegos en las 4 esquinas del predio
-  uno("iso-enfermeria", "Emergencias", 48, 33),
-  uno("iso-puesto-seguridad", "Emergencias", 53, 34),
-  uno("matafuego", "Emergencias", 2, 3),
-  uno("matafuego", "Emergencias", 58, 3),
-  uno("matafuego", "Emergencias", 2, 37),
-  uno("matafuego", "Emergencias", 58, 37),
-  uno("iso-punto-encuentro", "Emergencias", 13, 37),
+  // Punto de encuentro, lejos del tumulto de la entrada
+  uno("iso-punto-encuentro", "Emergencias", 2, 28),
 
-  // Orientación, luz y descanso a lo largo de la promenade
-  uno("iso-senal-informacion", "Servicios", 22, 33),
-  uno("iso-totem-direccional-multipanel", "Servicios", 32, 33),
+  // Salida de emergencia trasera y matafuegos a mitad de cada borde
+  uno("salida-emergencia-cerco", "Circulación", 26, 4),
+  uno("matafuego", "Emergencias", 10, 4),
+  uno("matafuego", "Emergencias", 48, 4),
+  uno("matafuego", "Emergencias", 2, 18),
+  uno("matafuego", "Emergencias", 58, 18),
   uno("flecha-norte", "Textos", 57, 2, { anchoM: 2, largoM: 2 }),
-  uno("iso-papelero-urbano-negro", "Servicios", 14, 27),
-  uno("iso-papelero-urbano-negro", "Servicios", 42, 27),
-  uno("iso-farola-peatonal-negra", "Electricidad", 10, 27),
-  uno("iso-farola-peatonal-negra", "Electricidad", 46, 27),
-  uno("bebedero", "Servicios", 22, 27),
-  uno("bebedero", "Servicios", 38, 27),
 ];
 
 export const PLANTILLAS_PLANO: PlantillaPlano[] = [
