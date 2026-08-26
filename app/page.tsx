@@ -18,6 +18,7 @@ export default function LandingPage() {
           <nav className="primary-nav">
             <a href="#como-funciona">Cómo funciona</a>
             <a href="#biblioteca">Biblioteca</a>
+            <Link href="/proyectos/plantillas">Plantillas</Link>
             <a href="#rubros">Rubros</a>
             <a href="#openstreetmap">OpenStreetMap</a>
             <a href="#revision">Revisión y PDF</a>
