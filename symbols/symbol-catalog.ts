@@ -19,6 +19,8 @@ import { CALLES_VEHICULARES } from "./categories/calles-vehiculares";
 import { CERRAMIENTOS } from "./categories/cerramientos";
 import { SUPERFICIES } from "./categories/superficies";
 import { ELEMENTOS_MISIONES } from "./categories/elementos-misiones";
+import { GALPONES } from "./categories/galpones";
+import { ICONOS_FUNCIONALES } from "./categories/iconos-funcionales";
 
 /** Catálogo completo de la biblioteca — PRD §11, agrupado por categoría. */
 export const SYMBOL_CATALOG: Record<CategoriaSimbolo, DefinicionSimbolo[]> = {
@@ -42,6 +44,8 @@ export const SYMBOL_CATALOG: Record<CategoriaSimbolo, DefinicionSimbolo[]> = {
   cerramientos: CERRAMIENTOS,
   superficies: SUPERFICIES,
   "elementos-misiones": ELEMENTOS_MISIONES,
+  galpones: GALPONES,
+  "iconos-funcionales": ICONOS_FUNCIONALES,
 };
 
 export const TODOS_LOS_SIMBOLOS: DefinicionSimbolo[] = Object.values(SYMBOL_CATALOG).flat();

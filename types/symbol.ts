@@ -18,7 +18,9 @@ export type CategoriaSimbolo =
   | "calles-vehiculares"
   | "cerramientos"
   | "superficies"
-  | "elementos-misiones";
+  | "elementos-misiones"
+  | "galpones"
+  | "iconos-funcionales";
 
 /** Definición estática de un componente de la biblioteca (no un objeto ya colocado). */
 export interface DefinicionSimbolo {

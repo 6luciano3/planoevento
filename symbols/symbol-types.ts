@@ -27,4 +27,6 @@ export const CATEGORIAS: DefinicionCategoria[] = [
   { id: "cerramientos", nombre: "Cerramientos y accesos" },
   { id: "superficies", nombre: "Superficies y bases" },
   { id: "elementos-misiones", nombre: "Elementos característicos de Misiones" },
+  { id: "galpones", nombre: "Galpones y pabellones" },
+  { id: "iconos-funcionales", nombre: "Íconos funcionales" },
 ];
