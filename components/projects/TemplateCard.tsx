@@ -4,7 +4,7 @@ import {
   Store, UtensilsCrossed, BookOpen, Rocket, Wheat, Music, Gift, Palette,
   Building2, Cpu, ShoppingBag, Beer, PawPrint, PartyPopper, Car, LayoutTemplate, type LucideIcon,
 } from "lucide-react";
-import type { PlantillaPlano } from "@/types/template";
+import type { ObjetoPlantilla, PlantillaPlano } from "@/types/template";
 import { CAPAS_INICIALES } from "@/config/layer-presets";
 
 const ICONOS: Record<string, LucideIcon> = {
@@ -24,14 +24,15 @@ interface TemplateCardProps {
 /** Pantalla 14 — una tarjeta de plantilla con vista previa a escala de los símbolos ya ubicados. */
 export function TemplateCard({ plantilla, onElegir }: TemplateCardProps) {
   const Icono = ICONOS[plantilla.icono] ?? LayoutTemplate;
-  const cantidadStands = plantilla.objetos.filter((o) => o.capa === "Stands").length;
+  const objetosConForma = plantilla.objetos.filter((o): o is ObjetoPlantilla => !("tipo" in o));
+  const cantidadStands = objetosConForma.filter((o) => o.capa === "Stands").length;
 
   return (
     <article className="project-card">
       <div className="project-card-thumb" aria-hidden="true">
         <svg viewBox={`0 0 ${ANCHO_PREDIO_M} ${ALTO_PREDIO_M}`}>
           <rect x={0} y={0} width={ANCHO_PREDIO_M} height={ALTO_PREDIO_M} fill="var(--paper-alt)" />
-          {plantilla.objetos.map((o, i) => (
+          {objetosConForma.map((o, i) => (
             <rect
               key={i}
               x={o.x}

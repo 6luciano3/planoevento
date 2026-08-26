@@ -1,4 +1,4 @@
-import type { ObjetoPlantilla, PlantillaPlano } from "@/types/template";
+import type { ObjetoPlantilla, PlantillaPlano, TextoPlantilla } from "@/types/template";
 
 /**
  * 10 plantillas de plano — Pantalla 14 "Plantillas" (PRD, extensión).
@@ -84,6 +84,11 @@ function uno(simboloId: string, capa: string, x: number, y: number, opts: Opts =
   return { simboloId, capa, x, y, ...opts };
 }
 
+/** Cartel de texto libre — para rotular una zona ("Artesanías regionales") como en un plano ilustrado real. */
+function texto(contenido: string, x: number, y: number, color?: string): TextoPlantilla {
+  return { tipo: "texto", contenido, capa: "Textos", x, y, color };
+}
+
 /**
  * Promenade pavimentada este-oeste (y=30) con un ramal en T hasta la
  * entrada principal (x=26) — piezas reales de la herramienta "Camino"
@@ -155,22 +160,35 @@ export const PLANTILLAS_PLANO: PlantillaPlano[] = [
     id: "feria-artesanias",
     nombre: "Feria de artesanías",
     tipoEvento: "FERIA",
-    descripcion: "Puestos de artesanos en filas regulares a los lados de una promenade pavimentada, con jardineras y punto de informes.",
+    descripcion: "Dos alas de puestos rotuladas por rubro, con una plaza central con fuente de agua entre ambas.",
     icono: "Store",
     objetos: [
       ...BASE_SERVICIOS,
-      ...grillaVariada(
-        ["stand-de-artesanias", "stand-de-artesanias-2", "stand-de-artesanias-3", "stand-de-artesanias-4", "ceramica-y-decoracion", "bijouterie", "textiles-y-tejidos", "velas-y-aromatizantes"],
-        "Stands",
-        6,
-        6,
-        6,
-        3,
-        8,
-        6
-      ),
-      ...fila("jardinera", "Vegetación", 6, 25, 4, 12),
-      uno("iso-puesto-informacion", "Servicios", 12, 25),
+
+      // Ala izquierda: artesanías tradicionales
+      texto("Artesanías regionales", 4, 3, "#9A3412"),
+      ...grillaVariada(["stand-de-artesanias", "stand-de-artesanias-2", "stand-de-artesanias-3", "stand-de-artesanias-4", "ceramica-y-decoracion", "textiles-y-tejidos"], "Stands", 6, 8, 2, 3, 7, 6),
+      uno("jardinera", "Vegetación", 3, 8),
+      uno("jardinera", "Vegetación", 3, 14),
+      uno("jardinera", "Vegetación", 3, 20),
+
+      // Ala derecha: emprendedores y diseño
+      texto("Emprendedores y diseño", 38, 5, "#9A3412"),
+      ...grillaVariada(["bijouterie", "velas-y-aromatizantes", "emprendedor-ceramica-y-diseno", "emprendedor-textiles-y-decoracion", "emprendedor-accesorios-y-bijouterie", "cosmetica-natural"], "Stands", 39, 8, 2, 3, 7, 6),
+      uno("jardinera", "Vegetación", 53, 8),
+      uno("jardinera", "Vegetación", 53, 14),
+      uno("jardinera", "Vegetación", 53, 20),
+
+      // Plaza central, entre las dos alas
+      texto("Espacio central", 20, 8, "#166534"),
+      uno("fuente-agua", "Servicios", 23, 12),
+      uno("jardinera", "Vegetación", 19, 10),
+      uno("jardinera", "Vegetación", 30, 10),
+      uno("jardinera", "Vegetación", 19, 19),
+      uno("jardinera", "Vegetación", 30, 19),
+      uno("iso-puesto-informacion", "Servicios", 23, 20),
+      uno("grupo-tres", "Servicios", 20, 16),
+      uno("visitante-mapa", "Servicios", 30, 16),
     ],
   },
   {

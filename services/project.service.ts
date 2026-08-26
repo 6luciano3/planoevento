@@ -1,6 +1,6 @@
 import type { ProyectoPlano, Evento } from "@/types/project";
 import type { ObjetoPlano } from "@/types/editor";
-import type { PlantillaPlano } from "@/types/template";
+import type { ObjetoPlantilla, PlantillaPlano, TextoPlantilla } from "@/types/template";
 import { leer, guardar } from "@/lib/storage";
 import { STORAGE_KEYS } from "@/lib/constants";
 import { CAPAS_INICIALES } from "@/config/layer-presets";
@@ -15,6 +15,10 @@ import { crearObjetoDesdeSimbolo } from "@/symbols/symbol-factory";
 
 function nuevoId(prefijo: string): string {
   return `${prefijo}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+}
+
+function esTextoPlantilla(item: ObjetoPlantilla | TextoPlantilla): item is TextoPlantilla {
+  return "tipo" in item && item.tipo === "texto";
 }
 
 export function listarProyectos(): ProyectoPlano[] {
@@ -118,6 +122,29 @@ export function crearProyectoDesdePlantilla(
   const objetos: ObjetoPlano[] = [];
   plantilla.objetos.forEach((item, i) => {
     const capaId = capaIdPorNombre.get(item.capa) ?? capaPorDefecto;
+
+    if (esTextoPlantilla(item)) {
+      objetos.push({
+        id: nuevoId("obj"),
+        tipo: "texto",
+        nombreVisible: item.contenido,
+        contenido: item.contenido,
+        capaId,
+        posicion: { x: item.x, y: item.y },
+        anchoM: Math.max(3, item.contenido.length * 0.6),
+        largoM: 1.2,
+        rotacionGrados: 0,
+        color: item.color ?? "#1C2430",
+        transparencia: 100,
+        ordenVisual: i + 1,
+        visible: true,
+        bloqueado: false,
+        mostrarNombre: false,
+        mostrarMedidas: false,
+      });
+      return;
+    }
+
     const objeto = crearObjetoDesdeSimbolo(item.simboloId, { x: item.x, y: item.y }, capaId, i + 1);
     if (!objeto) return;
     objetos.push({
