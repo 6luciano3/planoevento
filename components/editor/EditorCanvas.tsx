@@ -442,7 +442,7 @@ export function EditorCanvas() {
           if (def?.estiloIcono === "isometrico") {
             const { anchorXPx, anchorYPx, displayWidthPx } = centroYEscalaSimbolo(objeto, config);
             return (
-              <g key={objeto.id} {...comun}>
+              <g key={objeto.id} {...comun} transform={`rotate(${objeto.rotacionGrados} ${anchorXPx} ${anchorYPx})`}>
                 <IconoObjetoIsometrico
                   src={def.icono}
                   anchorXPx={anchorXPx}

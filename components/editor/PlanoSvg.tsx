@@ -135,7 +135,7 @@ export function PlanoSvg({ objetos, capas, soloImprimibles = false }: PlanoSvgPr
         if (def?.estiloIcono === "isometrico") {
           const { anchorXPx, anchorYPx, displayWidthPx } = centroYEscalaSimbolo(objeto, config);
           return (
-            <g key={objeto.id}>
+            <g key={objeto.id} transform={`rotate(${objeto.rotacionGrados} ${anchorXPx} ${anchorYPx})`}>
               <IconoObjetoIsometrico
                 src={def.icono}
                 anchorXPx={anchorXPx}

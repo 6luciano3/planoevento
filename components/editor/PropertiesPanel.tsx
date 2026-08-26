@@ -3,6 +3,7 @@
 import { useEditorStore } from "@/store/editor-store";
 import { useLayers } from "@/hooks/useLayers";
 import { FUENTES_TEXTO } from "@/config/fonts";
+import { obtenerSimbolo } from "@/symbols/symbol-catalog";
 
 const COLORES_PRESET = ["#16A34A", "#EA580C", "#2563EB", "#7C3AED", "#DC2626", "#475569"];
 
@@ -16,6 +17,8 @@ export function PropertiesPanel() {
   const { capas } = useLayers();
 
   const objeto = proyecto?.objetos.find((o) => o.id === seleccionId);
+  const definicionSimbolo = objeto?.simboloId ? obtenerSimbolo(objeto.simboloId) : undefined;
+  const puedeRotar = definicionSimbolo?.rotatable ?? true;
 
   if (!objeto) {
     return (
@@ -119,16 +122,20 @@ export function PropertiesPanel() {
             />
           </div>
         </div>
-        <div className="field">
-          <label>Rotación ({objeto.rotacionGrados}°)</label>
-          <input
-            type="range"
-            min={0}
-            max={359}
-            value={objeto.rotacionGrados}
-            onChange={(e) => actualizarPropiedades(objeto.id, { rotacionGrados: Number(e.target.value) })}
-          />
-        </div>
+        {puedeRotar ? (
+          <div className="field">
+            <label>Rotación ({objeto.rotacionGrados}°)</label>
+            <input
+              type="range"
+              min={0}
+              max={359}
+              value={objeto.rotacionGrados}
+              onChange={(e) => actualizarPropiedades(objeto.id, { rotacionGrados: Number(e.target.value) })}
+            />
+          </div>
+        ) : (
+          <p className="field-hint">Este símbolo tiene un ángulo de cámara fijo — no se puede rotar.</p>
+        )}
       </section>
 
       <section className="properties-section">
